@@ -2,5 +2,6 @@ name: DtlAnimations
 main: net.dtl.dandielo.bukkit.DtlAnimations
 version: 0.1A
 depend: [dtlAPI]
+softdepend: [Denizen]
 description: >
              | Animations using schematics as frames

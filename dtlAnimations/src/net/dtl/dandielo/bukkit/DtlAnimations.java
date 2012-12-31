@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import net.dtl.dandielo.FrameLoader;
 import net.dtl.dandielo.PlayerListener;
 import net.dtl.dandielo.animation.AnimationManager;
+import net.dtl.dandielo.denizen.AnimationCommand;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -32,6 +33,9 @@ public class DtlAnimations extends JavaPlugin {
 		loader = new FrameLoader(getConfig());
 		
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		
+		if (getServer().getPluginManager().getPlugin("Denizen") != null)
+			new AnimationCommand();
 	}
 	
 	public AnimationManager getAnimationManager()

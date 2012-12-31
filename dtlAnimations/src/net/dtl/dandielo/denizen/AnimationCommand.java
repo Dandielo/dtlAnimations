@@ -79,7 +79,7 @@ public class AnimationCommand extends AbstractCommand {
 	private enum AnimationAction { START, STOP }
 	private DtlAnimations animator;
 
-	AnimationCommand() {
+	public AnimationCommand() {
 		this.activate().as("ANIMATION").withOptions("({START}|STOP) [SCRIPT:animation_script]", 1);
 	}
 
