@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemorySection;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -51,7 +49,7 @@ import net.dtl.dandielo.bukkit.DtlAnimations;
  * <br><b>Sample Animation Script Format:</b><br>
  * <ol><pre>
  * 'Windmill Animation':
- *   name: Windmill 1
+ *   name: Windmill
  *   schedule: 40
  *   distance: 60
  *   location: 0.0,80.0,0.0:world

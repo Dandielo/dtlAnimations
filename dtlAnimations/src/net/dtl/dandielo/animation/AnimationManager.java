@@ -21,36 +21,58 @@ public class AnimationManager {
 	public static Utils utils = new Utils();
 
 	private Map<AnimationSet, List<Player>> players = Collections.synchronizedMap(new HashMap<AnimationSet, List<Player>>());
+	//As because of those animations run always they affect the enviroment
+	//Going to add some permissions system to figure out who can se what animation 
 	private Map<AnimationSet, Integer> animations = Collections.synchronizedMap(new HashMap<AnimationSet, Integer>());
+	
+	//Animations to run only once for a specific player, if you want to run it continously use a permission for a enviroment animation 
+	//private Map<AnimationSet, Integer> playerAnimations = Collections.synchronizedMap(new HashMap<AnimationSet, Integer>());
+	
 	private static int runningAnimations = 0;
 
 	private DtlAnimations plugin = DtlAnimations.getInstance();
 	private boolean stop = false;
 
-	public void addAnimation(AnimationSet animation)
-	{
-		animations.put(animation, plugin.getServer().getScheduler()
-				.scheduleSyncDelayedTask(plugin, new Update(animation), animation.getShedule()));
-		players.put(animation, Collections.synchronizedList(new LinkedList<Player>()) );
-
-		System.out.print("Curently running annimations: " + ++runningAnimations);
-	}
-
+	//Overall animatiom procedures
 	public void removeAnimation(AnimationSet animation) {
 		// Hopefully this covers everything involved in stopping an animation...
 		// Maybe some kind of 'reset' procedure if in the middle of an animation?
-		if (animations.containsKey(animation)) {
+		if ( animations.containsKey(animation) ) {
 			plugin.getServer().getScheduler().cancelTask(animations.get(animation));
 			animations.remove(animation);
-			players.remove(animation);
+			//players.remove(animation);
 			runningAnimations--;
 		}
 	}
 
+	public boolean checkDistance(AnimationSet animation, Player player)
+	{
+		return player.getLocation().distance(animation.getLocation()) < animation.getDistance();
+	}
+	
+	public List<AnimationSet> getNearAnimations(Player player)
+	{
+		List<AnimationSet> ret = new ArrayList<AnimationSet>();
+		for ( AnimationSet animation : animations.keySet() )
+			if ( player.getLocation().distance(animation.getLocation()) < animation.getDistance() )
+				ret.add(animation);
+		return ret;
+	}
+	
+	//Enviroment animations
+	public void addAnimation(AnimationSet animation)
+	{
+		animations.put(animation, plugin.getServer().getScheduler()
+				.scheduleSyncDelayedTask(plugin, new EnviromentUpdate(animation), animation.getShedule()));
+		players.put(animation, Collections.synchronizedList(new LinkedList<Player>()) );
+
+		System.out.print("Curently running annimations: " + ++runningAnimations);
+	}
+	
 	private void scheduleNextUpdate(AnimationSet animation, AnimationFrame frame) {
 		plugin.getServer().getScheduler().cancelTask(animations.get(animation));
 		animations.put(animation, plugin.getServer().getScheduler()
-				.scheduleSyncDelayedTask(plugin, new Update(animation), frame.getShedule()) );
+				.scheduleSyncDelayedTask(plugin, new EnviromentUpdate(animation), frame.getShedule()) );
 	}
 
 	public boolean addPlayer(AnimationSet animation, Player player)
@@ -62,48 +84,24 @@ public class AnimationManager {
 		while(it.hasNext() && !has)
 		{
 			if ( it.next().getName().equals(player.getName()) )
-				has = true;//it.remove();
+				has = true;
 		}
 		if ( !has )
 		{
 			it.add(player);
 			return true;
 		}
-
-		/*if ( players == null )
-		{
-			players = Collections.synchronizedList(new LinkedList<Player>());
-			this.players.put(animation, players);
-		}
-		if ( !players.contains(player) )
-		{
-			players.add(player);
-			return true;
-		}*/
+		
 		return false;
 
 	}
-
-	public List<AnimationSet> getNearAnimations(Player player)
-	{
-		List<AnimationSet> ret = new ArrayList<AnimationSet>();
-		for ( AnimationSet animation : animations.keySet() )
-			if ( player.getLocation().distance(animation.getLocation()) < animation.getDistance() )
-				ret.add(animation);
-		return ret;
-	}
-
-	public boolean checkDistance(AnimationSet animation, Player player)
-	{
-		return player.getLocation().distance(animation.getLocation()) < animation.getDistance();
-	}
-
-	public class Update implements Runnable
+	
+	public class EnviromentUpdate implements Runnable
 	{
 
 		private AnimationSet animation;
 
-		public Update(AnimationSet animation) {	
+		public EnviromentUpdate(AnimationSet animation) {	
 			this.animation = animation;
 
 		}
@@ -125,20 +123,60 @@ public class AnimationManager {
 					else
 						it.remove();
 				}
-				/*		for ( Player p : pl )
-				{
-					if ( checkDistance(animation, p) )
-						frame.sendTo(p);
-					else
-						pl.remove(p);
-				}*/
-
+				
 				animation.nextFrame();
 				scheduleNextUpdate(animation, frame);
 			}
 		}
 	}
 
+	//PlayerAnimation procedures 
+	private void scheduleNextPlayerUpdate(AnimationSet animation, AnimationFrame frame, Player player) {
+		plugin.getServer().getScheduler().cancelTask(animations.get(animation));
+		animations.put(animation, plugin.getServer().getScheduler()
+				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), frame.getShedule()) );
+	}
+	
+	//used by and created for Denizen command
+	public void addPlayerAnimation(AnimationSet animation, Player player)
+	{
+		animations.put(animation, plugin.getServer().getScheduler()
+				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), animation.getShedule()));
+
+		System.out.print("Curently running annimations: " + ++runningAnimations);
+	}
+
+	//Player update
+	public class PlayerUpdate implements Runnable
+	{
+
+		private AnimationSet animation;
+		private Player player;
+
+		public PlayerUpdate(AnimationSet animation, Player player) {	
+			this.animation = animation;
+			this.player = player;
+		}
+
+		@Override
+		public void run() {
+			if (!stop)
+			{	
+				AnimationFrame frame = animation.getFrame();
+
+				if ( !checkDistance(animation, player) )
+					frame.sendTo(player);
+
+				animation.nextFrame();
+				scheduleNextPlayerUpdate(animation, frame, player);
+			}
+		}
+	}
+	
+	
+	
+	
+	//Might me changed 
 	public static class Utils
 	{
 		private Pattern pattern;

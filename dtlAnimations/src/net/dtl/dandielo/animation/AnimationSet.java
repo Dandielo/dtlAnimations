@@ -20,7 +20,17 @@ public class AnimationSet implements Comparable<AnimationSet> {
 	private int shedule;
 
 	private int frame = 0;
-
+	
+	//added for clonning
+	private AnimationSet(AnimationSet animation)
+	{
+		name = animation.name;
+		frames = new ArrayList<AnimationFrame>(frames);
+		location = animation.location;
+		distance = animation.distance;
+		shedule = animation.shedule;
+	}
+	
 	public AnimationSet(ConfigurationSection animation)
 	{
 		frames = new ArrayList<AnimationFrame>();
@@ -61,7 +71,6 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		++frame;
 		frame %= frames.size();
 	}
-
 
 	public AnimationFrame getFrame()
 	{
@@ -109,4 +118,29 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		return name.compareTo(animation.name);
 	}
 
+
+	
+	//To avoid loading every animation more than one time for Denizen scripts
+	private boolean running;
+
+	
+	//So animations can be added multiplied for a player
+	public AnimationSet runAs(String player)
+	{
+		AnimationSet animation = new AnimationSet(this);
+		animation.name += "_" + player;
+		animation.running = true;
+		return animation;
+	}
+	
+	public boolean running()
+	{
+		return running;
+	}
+	
+	public void setRunning(boolean run)
+	{
+		running = run;
+	}
+	
 }

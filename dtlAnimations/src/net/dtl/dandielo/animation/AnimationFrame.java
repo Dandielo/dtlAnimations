@@ -5,7 +5,6 @@ import static net.dtl.dandielo.animation.AnimationManager.utils;
 import java.util.List;
 
 import net.dtl.api.PacketsAPI;
-import net.dtl.dandielo.bukkit.DtlAnimations;
 import net.minecraft.server.v1_4_6.EntityPlayer;
 import net.minecraft.server.v1_4_6.Packet52MultiBlockChange;
 
@@ -39,7 +38,7 @@ public class AnimationFrame {
 		} catch (Exception e) 
 		{
 			//TODO nice debuger 
-			System.out.print("Failed to load frame from: " + filepath.replace('\\', '/') + "/" + filename);
+		//	System.out.print("Failed to load frame from: " + filepath.replace('\\', '/') + "/" + filename);
 			e.printStackTrace();
 		}
 	}
