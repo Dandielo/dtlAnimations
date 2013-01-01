@@ -12,10 +12,22 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
 
 	private AnimationManager manager = DtlAnimations.getInstance().getAnimationManager();
+	
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent event)
+	{
+		List<AnimationSet> animations = manager.getNearAnimations(event.getPlayer());
+		
+		for ( AnimationSet animation : animations )
+		{
+			manager.removeAnimation(animation);
+		}
+	}
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event)

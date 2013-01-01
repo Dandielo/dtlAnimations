@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dtl.dandielo.FrameLoader;
+import net.dtl.dandielo.bukkit.DtlAnimations;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -44,8 +45,14 @@ public class AnimationSet implements Comparable<AnimationSet> {
 			name = animation.getString("name", animation.getName());
 			distance = animation.getInt("distance", 60);
 			shedule = animation.getInt("schedule", 20);
-			location = utils.makeLocation(animation.getString("location"));
-
+			
+			ConfigurationSection loc = animation.getConfigurationSection("location"); 
+			location = new Location(DtlAnimations.getInstance().getServer().getWorld(loc.getString("world")),
+					loc.getDouble("x"), 
+					loc.getDouble("y"),
+					loc.getDouble("z")
+					);
+			
 			for ( String frame : animation.getConfigurationSection("frames").getKeys(false) )
 				frames.add( new AnimationFrame(this, animation.getConfigurationSection( FrameLoader.buildPath("frames",frame) )) );
 		} 
@@ -55,7 +62,13 @@ public class AnimationSet implements Comparable<AnimationSet> {
 			name = animation.getString("NAME", animation.getName());
 			distance = animation.getInt("DISTANCE", 60);
 			shedule = animation.getInt("SCHEDULE", 20);
-			location = utils.makeLocation(animation.getString("LOCATION"));
+			
+			ConfigurationSection loc = animation.getConfigurationSection("LOCATION"); 
+			location = new Location(DtlAnimations.getInstance().getServer().getWorld(loc.getString("WORLD")),
+									loc.getDouble("X"), 
+									loc.getDouble("Y"),
+									loc.getDouble("Z")
+									);//utils.makeLocation(animation.getString("LOCATION"));
 
 			for ( String frame : animation.getConfigurationSection("FRAMES").getKeys(false) )
 				frames.add( new AnimationFrame(this, animation.getConfigurationSection( FrameLoader.buildPath("frames",frame) )) );

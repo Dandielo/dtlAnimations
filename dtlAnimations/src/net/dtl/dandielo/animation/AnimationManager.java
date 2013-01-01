@@ -129,18 +129,6 @@ public class AnimationManager {
 			}
 		}
 	}
-
-	//PlayerAnimation procedures 
-	public void removePlayerAnimation(AnimationSet animation) {
-		// Hopefully this covers everything involved in stopping an animation...
-		// Maybe some kind of 'reset' procedure if in the middle of an animation?
-		if ( animations.containsKey(animation) ) {
-			plugin.getServer().getScheduler().cancelTask(animations.get(animation));
-			animations.remove(animation);
-			//players.remove(animation);
-			runningAnimations--;
-		}
-	}
 	
 	//used by and created for Denizen command
 	public void addPlayerAnimation(AnimationSet animation, Player player)
@@ -201,7 +189,7 @@ public class AnimationManager {
 
 		}
 
-		public Location makeLocation(String locStr)
+	/*	public Location makeLocation(String locStr)
 		{
 			if ( locStr == null )
 				return null;
@@ -224,7 +212,7 @@ public class AnimationManager {
 			loc = new Location(DtlAnimations.getInstance().getServer().getWorld(world), val[0], val[1], val[2]);
 
 			return loc;
-		}
+		}*/
 	}
 
 }
