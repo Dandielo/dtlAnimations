@@ -52,7 +52,11 @@ import net.dtl.dandielo.bukkit.DtlAnimations;
  *   name: Windmill
  *   schedule: 40
  *   distance: 60
- *   location: 0.0,80.0,0.0:world
+ *   location: 
+ *   	x: 0.0
+ *   	y: 80.0
+ *   	z: 0.0
+ *   	world: world
  *   frames:
  *     1:
  *       file: frame1
