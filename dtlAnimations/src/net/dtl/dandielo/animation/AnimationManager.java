@@ -34,17 +34,6 @@ public class AnimationManager {
 	private boolean stop = false;
 
 	//Overall animatiom procedures
-	public void removeAnimation(AnimationSet animation) {
-		// Hopefully this covers everything involved in stopping an animation...
-		// Maybe some kind of 'reset' procedure if in the middle of an animation?
-		if ( animations.containsKey(animation) ) {
-			plugin.getServer().getScheduler().cancelTask(animations.get(animation));
-			animations.remove(animation);
-			//players.remove(animation);
-			runningAnimations--;
-		}
-	}
-
 	public boolean checkDistance(AnimationSet animation, Player player)
 	{
 		return player.getLocation().distance(animation.getLocation()) < animation.getDistance();
@@ -67,6 +56,17 @@ public class AnimationManager {
 		players.put(animation, Collections.synchronizedList(new LinkedList<Player>()) );
 
 		System.out.print("Curently running annimations: " + ++runningAnimations);
+	}
+
+	public void removeAnimation(AnimationSet animation) {
+		// Hopefully this covers everything involved in stopping an animation...
+		// Maybe some kind of 'reset' procedure if in the middle of an animation?
+		if ( animations.containsKey(animation) ) {
+			plugin.getServer().getScheduler().cancelTask(animations.get(animation));
+			animations.remove(animation);
+			players.remove(animation);
+			runningAnimations--;
+		}
 	}
 	
 	private void scheduleNextUpdate(AnimationSet animation, AnimationFrame frame) {
@@ -131,10 +131,15 @@ public class AnimationManager {
 	}
 
 	//PlayerAnimation procedures 
-	private void scheduleNextPlayerUpdate(AnimationSet animation, AnimationFrame frame, Player player) {
-		plugin.getServer().getScheduler().cancelTask(animations.get(animation));
-		animations.put(animation, plugin.getServer().getScheduler()
-				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), frame.getShedule()) );
+	public void removePlayerAnimation(AnimationSet animation) {
+		// Hopefully this covers everything involved in stopping an animation...
+		// Maybe some kind of 'reset' procedure if in the middle of an animation?
+		if ( animations.containsKey(animation) ) {
+			plugin.getServer().getScheduler().cancelTask(animations.get(animation));
+			animations.remove(animation);
+			//players.remove(animation);
+			runningAnimations--;
+		}
 	}
 	
 	//used by and created for Denizen command
@@ -144,6 +149,12 @@ public class AnimationManager {
 				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), animation.getShedule()));
 
 		System.out.print("Curently running annimations: " + ++runningAnimations);
+	}
+	
+	private void scheduleNextPlayerUpdate(AnimationSet animation, AnimationFrame frame, Player player) {
+		plugin.getServer().getScheduler().cancelTask(animations.get(animation));
+		animations.put(animation, plugin.getServer().getScheduler()
+				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), frame.getShedule()) );
 	}
 
 	//Player update
