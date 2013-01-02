@@ -27,7 +27,7 @@
 		</repository>
 		<repository>
 		  <id>snapshots</id>
-		  <url>http://93.181.141.191/nexus/content/repositories/snapshots</url>
+		  <url>http://93.181.141.191/nexus/content/repositories/release</url>
 		</repository>
 	</repositories> 
 	
