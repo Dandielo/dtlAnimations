@@ -11,7 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<craftbukkit.version>LATEST</craftbukkit.version>
 		<denizen.version>0.8-PRERELEASE</denizen.version>
-		<dtlApi.version>0.0.1-SNAPSHOT</dtlApi.version>
+		<dtlApi.version>0.0.1-PRE</dtlApi.version>
 				<build.number>Unknown</build.number>
 	</properties>
 
