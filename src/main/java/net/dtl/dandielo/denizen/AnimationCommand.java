@@ -111,7 +111,7 @@ public class AnimationCommand extends AbstractCommand {
 				continue;
 
 				// mathesDuration will make sure the argument is a positive integer
-			} else if (aH.matchesDouble(null)) {
+			} else if (aH.matchesDouble(arg)) {
 				duration = aH.getIntegerFrom(arg);
 				dB.echoDebug("...set DURATION: '%s'", String.valueOf(duration));
 				continue;
