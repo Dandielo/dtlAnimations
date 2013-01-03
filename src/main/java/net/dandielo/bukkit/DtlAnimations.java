@@ -1,11 +1,12 @@
-package net.dtl.dandielo.bukkit;
+package net.dandielo.bukkit;
 
 import java.util.logging.Logger;
 
-import net.dtl.dandielo.FrameLoader;
-import net.dtl.dandielo.PlayerListener;
-import net.dtl.dandielo.animation.AnimationManager;
-import net.dtl.dandielo.denizen.AnimationCommand;
+import net.dandielo.FrameLoader;
+import net.dandielo.PacketsManager;
+import net.dandielo.PlayerListener;
+import net.dandielo.animation.AnimationManager;
+import net.dandielo.denizen.AnimationCommand;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -17,6 +18,7 @@ public class DtlAnimations extends JavaPlugin {
 	
 	private static DtlAnimations instance;
 	private AnimationManager animationManager;
+	private PacketsManager packetsManager;
 	private FrameLoader loader;
 	
 	@Override
@@ -28,7 +30,8 @@ public class DtlAnimations extends JavaPlugin {
 		sender = Bukkit.getServer().getConsoleSender();
 		
 		this.saveDefaultConfig();
-		
+
+		packetsManager = new PacketsManager();
 		animationManager = new AnimationManager();
 		loader = new FrameLoader(getConfig());
 		
@@ -47,6 +50,11 @@ public class DtlAnimations extends JavaPlugin {
 	public static DtlAnimations getInstance()
 	{
 		return instance;
+	}
+	
+	public PacketsManager getPacketsManager()
+	{
+		return packetsManager;
 	}
 	
 	//logger info

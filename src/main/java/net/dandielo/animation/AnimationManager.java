@@ -1,4 +1,4 @@
-package net.dtl.dandielo.animation;
+package net.dandielo.animation;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.dtl.dandielo.bukkit.DtlAnimations;
+import net.dandielo.bukkit.DtlAnimations;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

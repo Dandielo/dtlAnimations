@@ -1,12 +1,12 @@
-package net.dtl.dandielo.animation;
+package net.dandielo.animation;
 
-import static net.dtl.dandielo.animation.AnimationManager.utils;
+import static net.dandielo.animation.AnimationManager.utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dtl.dandielo.FrameLoader;
-import net.dtl.dandielo.bukkit.DtlAnimations;
+import net.dandielo.FrameLoader;
+import net.dandielo.bukkit.DtlAnimations;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -44,7 +44,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		{
 			name = animation.getString("name", animation.getName());
 			distance = animation.getInt("distance", 60);
-			shedule = animation.getInt("schedule", 20);
+			shedule = animation.getInt("shedule", 20);
 			
 			ConfigurationSection loc = animation.getConfigurationSection("location"); 
 			location = new Location(DtlAnimations.getInstance().getServer().getWorld(loc.getString("world")),
@@ -61,7 +61,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		{
 			name = animation.getString("NAME", animation.getName());
 			distance = animation.getInt("DISTANCE", 60);
-			shedule = animation.getInt("SCHEDULE", 20);
+			shedule = animation.getInt("SHEDULE", 20);
 			
 			ConfigurationSection loc = animation.getConfigurationSection("LOCATION"); 
 			location = new Location(DtlAnimations.getInstance().getServer().getWorld(loc.getString("WORLD")),
@@ -70,8 +70,9 @@ public class AnimationSet implements Comparable<AnimationSet> {
 									loc.getDouble("Z")
 									);//utils.makeLocation(animation.getString("LOCATION"));
 
+			
 			for ( String frame : animation.getConfigurationSection("FRAMES").getKeys(false) )
-				frames.add( new AnimationFrame(this, animation.getConfigurationSection( FrameLoader.buildPath("frames",frame) )) );
+				frames.add( new AnimationFrame(this, animation.getConfigurationSection( "FRAMES."+frame )) );
 		}
 
 		// Loaded animation

@@ -25,10 +25,6 @@
 			<id>everything</id>
 			<url>http://repo.citizensnpcs.com</url>
 		</repository>
-		<repository>
-		  <id>snapshots</id>
-		  <url>http://93.181.141.191/nexus/content/repositories/releases</url> 
-		</repository>
 	</repositories> 
 	
 	<!-- Repositories -->
@@ -44,12 +40,6 @@
 			<groupId>net.aufdemrand</groupId>
 			<artifactId>denizen</artifactId>
 			<version>${denizen.version}</version>
-			<scope>provided</scope> 
-		</dependency>
-		<dependency>
-			<groupId>net.dandielo</groupId>
-			<artifactId>dtlApi</artifactId>
-			<version>${dtlApi.version}</version>
 			<scope>provided</scope> 
 		</dependency>
  	</dependencies> 

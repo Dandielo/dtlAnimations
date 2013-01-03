@@ -1,12 +1,12 @@
-package net.dtl.dandielo;
+package net.dandielo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import net.dtl.dandielo.animation.AnimationManager;
-import net.dtl.dandielo.animation.AnimationSet;
-import net.dtl.dandielo.bukkit.DtlAnimations;
+import net.dandielo.animation.AnimationManager;
+import net.dandielo.animation.AnimationSet;
+import net.dandielo.bukkit.DtlAnimations;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;

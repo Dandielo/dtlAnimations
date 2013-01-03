@@ -1,4 +1,4 @@
-package net.dtl.dandielo.denizen;
+package net.dandielo.denizen;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,8 +13,8 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable1;
-import net.dtl.dandielo.animation.AnimationSet;
-import net.dtl.dandielo.bukkit.DtlAnimations;
+import net.dandielo.animation.AnimationSet;
+import net.dandielo.bukkit.DtlAnimations;
 
 /**
  * <p>Sends a block animation sequence using .schematic files and an 'ANIMATION script'</p>
