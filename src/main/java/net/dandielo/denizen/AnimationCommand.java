@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -21,7 +22,7 @@ import net.dandielo.bukkit.DtlAnimations;
  * 
  * 
  * <br><b>dScript Usage:</b><br>
- * <pre>ANIMATION ({START}|STOP) [SCRIPT:animation_script] (DURATION:#)</pre>
+ * <pre>ANIMATION ({START}|STOP) [SCRIPT:animation_script] ({PLAYER}/ENVIROMENT) (REPEATS:#)</pre>
  * 
  * <ol><tt>Arguments: [] - Required, () - Optional, {} - Default</ol></tt>
  * 
@@ -31,9 +32,9 @@ import net.dandielo.bukkit.DtlAnimations;
  * <ol><tt>[SCRIPT:animation_script]</tt><br> 
  *         The animation script to use. See below for format.</ol>
  * 
- * <ol><tt>[DURATION:#]</tt><br> 
- *         The duration of the animation, in seconds. To be used with 'START'. After
- *         the duration, this animation will automatically 'STOP'.</ol>
+ * <ol><tt>[REPEATS:#]</tt><br> 
+ *         Repeats of the animation, in "times". To be used with 'START'. After
+ *         is has repated given times, this animation will automatically 'STOP'.</ol>
  * 
  * <p>
  * Note: Animations used with Denizen go into /plugins/Denizen/scripts/, along with your
@@ -43,7 +44,7 @@ import net.dandielo.bukkit.DtlAnimations;
  * <br><b>Example Usage:</b><br>
  * <ol><tt>
  *  - ANIMATION START SCRIPT:pendulum_swing<br>
- *  - ANIMATION START SCRIPT:windmill_spin DURATION:360<br>
+ *  - ANIMATION START SCRIPT:windmill_spin REPEATS:3<br>
  * </ol></tt>
  * 
  * <br><b>Sample Animation Script Format:</b><br>
@@ -96,10 +97,12 @@ public class AnimationCommand extends AbstractCommand {
 
 		// Initialize fields used
 		String script = null;
-		int duration = -1;
+		int repeats = 0;
 		// Make default action START
 		AnimationAction action = AnimationAction.START;
-
+		// mage default scope
+		String scoope = "PLAYER";
+		
 		// Iterate through arguments
 		for (String arg : scriptEntry.getArguments()) {
 
@@ -111,14 +114,20 @@ public class AnimationCommand extends AbstractCommand {
 				continue;
 
 				// mathesDuration will make sure the argument is a positive integer
-			} else if (aH.matchesDuration(arg)) {
-				duration = aH.getIntegerFrom(arg);
-				dB.echoDebug("...set DURATION: '%s'", String.valueOf(duration));
+			} else if (arg.startsWith("REPEATS:")) {
+				repeats = aH.getIntegerFrom(arg.substring(8));
+				dB.echoDebug("...set REPEATS: '%s'", String.valueOf(repeats));
 				continue;
 
 				// matches the same values as the AnimationAction enum
 			} else if (aH.matchesArg("START, STOP", arg)) {
 				action = AnimationAction.valueOf(aH.getStringFrom(arg).toUpperCase());
+				dB.echoDebug("...set AnimationAction: '%s'", action.toString());
+				continue;
+
+				// Unknown argument should be caught to avoid unwanted behavior.
+			} else if (aH.matchesArg("ENVIROMENT, PLAYER", arg)) {
+				scoope = aH.getStringFrom(arg).toUpperCase();
 				dB.echoDebug("...set AnimationAction: '%s'", action.toString());
 				continue;
 
@@ -132,10 +141,11 @@ public class AnimationCommand extends AbstractCommand {
 			throw new InvalidArgumentsException("Must specify a valid 'Animation SCRIPT'.");
 
 		// Stash objects in scriptEntry for use in execute()
-		scriptEntry.addObject("duration", duration);
+		scriptEntry.addObject("repeats", repeats);
 		scriptEntry.addObject("action", action);
+		scriptEntry.addObject("scoope", scoope);
 		scriptEntry.addObject("script", script);
-		scriptEntry.addObject("duration", duration);
+		//scriptEntry.addObject("duration", duration);
 	}
 
 
@@ -150,7 +160,7 @@ public class AnimationCommand extends AbstractCommand {
 		switch ((AnimationAction) scriptEntry.getObject("action")) {
 
 		case START:
-			startAnimation(script);
+			startAnimation(script, (String) scriptEntry.getObject("scoope"), (Integer) scriptEntry.getObject("repeats"), scriptEntry.getPlayer());
 			break;
 
 		case STOP:
@@ -158,8 +168,8 @@ public class AnimationCommand extends AbstractCommand {
 			break;
 		}
 
-		// Handle duration, if set
-		int duration = (Integer) scriptEntry.getObject("duration");
+		// Handle duration, if set, add this maybe in future
+		int duration = (Integer) scriptEntry.getObject("repeats");//(Integer) scriptEntry.getObject("duration");
 		if (duration > 0 && (AnimationAction) scriptEntry.getObject("action") == AnimationAction.START) {
 
 			// If this script already has a duration, stop the task so a new one can be made
@@ -182,7 +192,7 @@ public class AnimationCommand extends AbstractCommand {
 							}
 						}
 
-					}, duration * 20));
+					}, animations.get(script).totalSheduleTime() ));
 		}
 	}
 
@@ -193,12 +203,16 @@ public class AnimationCommand extends AbstractCommand {
 	private Map<String, AnimationSet> animations = new ConcurrentHashMap<String, AnimationSet>();
 
 	// Calls animationmanager to add an AnimationSet
-	private void startAnimation(String script) {
+	private void startAnimation(String script, String scoope, int repeats, Player player) {
 		if (animations.containsKey(script)) {
 			dB.echoDebug("Animation '%s' is already running.", script);
 		} else {
 			animations.put(script, new AnimationSet(denizen.getScripts().getConfigurationSection(script)));
-			animator.getAnimationManager().addAnimation(animations.get(script));
+			animations.get(script).setRepeats(repeats);
+			if ( scoope.equalsIgnoreCase("player") )
+				animator.getAnimationManager().addPlayerAnimation(animations.get(script).runAs(player.getName()), player);
+			else
+				animator.getAnimationManager().addAnimation(animations.get(script));
 		}
 	}
 

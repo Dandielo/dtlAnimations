@@ -1,7 +1,6 @@
 package net.dandielo.animation;
 
-import static net.dandielo.animation.AnimationManager.utils;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import net.dandielo.bukkit.DtlAnimations;
@@ -13,7 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public class AnimationFrame {
+public class AnimationFrame implements Cloneable {
 	private List<Packet52MultiBlockChange> data;
 	private int shedule;
 	private Location location;

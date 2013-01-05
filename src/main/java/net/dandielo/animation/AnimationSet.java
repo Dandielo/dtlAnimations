@@ -1,9 +1,6 @@
 package net.dandielo.animation;
 
-import static net.dandielo.animation.AnimationManager.utils;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import net.dandielo.FrameLoader;
 import net.dandielo.bukkit.DtlAnimations;
@@ -14,19 +11,21 @@ import org.bukkit.configuration.ConfigurationSection;
 public class AnimationSet implements Comparable<AnimationSet> {
 
 	private String name;
-	private List<AnimationFrame> frames;
+	private ArrayList<AnimationFrame> frames;
 
 	private Location location;
 	private int distance; 
 	private int shedule;
 
 	private int frame = 0;
+	private int repeats;
 	
 	//added for clonning
 	private AnimationSet(AnimationSet animation)
 	{
 		name = animation.name;
-		frames = new ArrayList<AnimationFrame>(frames);
+		frames = (ArrayList<AnimationFrame>) animation.frames.clone();
+
 		location = animation.location;
 		distance = animation.distance;
 		shedule = animation.shedule;
@@ -80,10 +79,27 @@ public class AnimationSet implements Comparable<AnimationSet> {
 
 	}
 
+	public int totalSheduleTime()
+	{
+		int total = shedule;
+		for ( AnimationFrame frame : frames )
+			total += frame.getShedule();
+		
+		return total;
+	}
+	
+	public void setRepeats(int r)
+	{
+		repeats = r;
+	}
+	
 	public void nextFrame()
 	{
 		++frame;
 		frame %= frames.size();
+		
+		if ( frames.size() == frame + 1 && repeats >= 0 )
+			--repeats;
 	}
 
 	public AnimationFrame getFrame()
@@ -132,29 +148,17 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		return name.compareTo(animation.name);
 	}
 
-
-	
 	//To avoid loading every animation more than one time for Denizen scripts
-	private boolean running;
-
+	public boolean repeat()
+	{
+		return repeats >= 0 || repeats == -2;
+	}
 	
 	//So animations can be added multiplied for a player
 	public AnimationSet runAs(String player)
 	{
 		AnimationSet animation = new AnimationSet(this);
 		animation.name += "_" + player;
-		animation.running = true;
 		return animation;
 	}
-	
-	public boolean running()
-	{
-		return running;
-	}
-	
-	public void setRunning(boolean run)
-	{
-		running = run;
-	}
-	
 }

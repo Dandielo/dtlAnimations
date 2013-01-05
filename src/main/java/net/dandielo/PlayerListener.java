@@ -25,7 +25,7 @@ public class PlayerListener implements Listener {
 		
 		for ( AnimationSet animation : animations )
 		{
-			manager.removeAnimation(animation);
+			manager.removePlayer(animation, event.getPlayer());//.removeAnimation(animation);
 		}
 	}
 	

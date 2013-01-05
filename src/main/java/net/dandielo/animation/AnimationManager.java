@@ -18,8 +18,6 @@ import org.bukkit.entity.Player;
 
 public class AnimationManager {
 
-	public static Utils utils = new Utils();
-
 	private Map<AnimationSet, List<Player>> players = Collections.synchronizedMap(new HashMap<AnimationSet, List<Player>>());
 	//As because of those animations run always they affect the enviroment
 	//Going to add some permissions system to figure out who can se what animation 
@@ -67,7 +65,11 @@ public class AnimationManager {
 			players.remove(animation);
 			runningAnimations--;
 		}
+		
+		//check how many animations are running
+		System.out.print("Curently running annimations: " + runningAnimations);
 	}
+	
 	
 	private void scheduleNextUpdate(AnimationSet animation, AnimationFrame frame) {
 		plugin.getServer().getScheduler().cancelTask(animations.get(animation));
@@ -79,6 +81,9 @@ public class AnimationManager {
 	{
 		List<Player> players = this.players.get(animation);
 
+		if ( players == null )
+			return false;
+		
 		boolean has = false;
 		ListIterator<Player> it = (ListIterator<Player>) players.iterator();
 		while(it.hasNext() && !has)
@@ -93,7 +98,24 @@ public class AnimationManager {
 		}
 		
 		return false;
+	}
+	
+	public void removePlayer(AnimationSet animation, Player player)
+	{
+		List<Player> pl = players.get(animation);
 
+		if ( pl == null )
+			return;
+		
+		ListIterator<Player> it = (ListIterator<Player>) pl.iterator();
+		while(it.hasNext())
+		{
+			if ( player.getName().equals(it.next().getName()) )
+			{
+				it.remove();
+				return;
+			}
+		}
 	}
 	
 	public class EnviromentUpdate implements Runnable
@@ -139,6 +161,21 @@ public class AnimationManager {
 		System.out.print("Curently running annimations: " + ++runningAnimations);
 	}
 	
+	public void removePlayerAnimation(AnimationSet animation) {
+		// Hopefully this covers everything involved in stopping an animation...
+		// Maybe some kind of 'reset' procedure if in the middle of an animation?
+		
+		if ( animations.containsKey(animation) ) {
+			plugin.getServer().getScheduler().cancelTask(animations.get(animation));
+			animations.remove(animation);
+			players.remove(animation);
+			runningAnimations--;
+		}
+		
+		//check how many animations are running
+		System.out.print("Curently running annimations: " + runningAnimations);
+	}
+	
 	private void scheduleNextPlayerUpdate(AnimationSet animation, AnimationFrame frame, Player player) {
 		plugin.getServer().getScheduler().cancelTask(animations.get(animation));
 		animations.put(animation, plugin.getServer().getScheduler()
@@ -163,56 +200,19 @@ public class AnimationManager {
 			{	
 				AnimationFrame frame = animation.getFrame();
 
-				if ( !checkDistance(animation, player) )
+				if ( checkDistance(animation, player) )
 					frame.sendTo(player);
 
+				
+				if ( animation.repeat() )
+					scheduleNextPlayerUpdate(animation, frame, player);
+				else
+					removePlayerAnimation(animation);
+				
 				animation.nextFrame();
-				scheduleNextPlayerUpdate(animation, frame, player);
 			}
 		}
 	}
-	
-	
-	
-	
-	//Might me changed 
-	public static class Utils
-	{
-		private Pattern pattern;
-		private char decimalSeparator;
 
-		public Utils()
-		{
-			//get the separator
-			decimalSeparator = ((DecimalFormat) DecimalFormat.getInstance()).getDecimalFormatSymbols().getDecimalSeparator();
-			pattern = Pattern.compile("([\\d]+[^" + decimalSeparator + "|:]{0,1}[\\d]*)");
-
-		}
-
-	/*	public Location makeLocation(String locStr)
-		{
-			if ( locStr == null )
-				return null;
-
-			Location loc = null;
-
-			int i = 0;
-			double val[] = new double[3];
-			String world = locStr.split(":")[1];
-
-			Matcher matcher = pattern.matcher(locStr);
-
-
-			while(matcher.find())
-			{
-				val[i] = Double.parseDouble(matcher.group());
-				++i;
-			}
-
-			loc = new Location(DtlAnimations.getInstance().getServer().getWorld(world), val[0], val[1], val[2]);
-
-			return loc;
-		}*/
-	}
 
 }
