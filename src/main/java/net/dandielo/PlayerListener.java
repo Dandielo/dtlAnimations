@@ -36,8 +36,8 @@ public class PlayerListener implements Listener {
 		
 		for ( AnimationSet animation : animations )
 		{
-			if ( manager.addPlayer(animation, event.getPlayer()) )
-				info(ChatColor.RED + event.getPlayer().getName() + " has startet reciving animation packets for animation: " + ChatColor.GOLD + animation);
+			if ( manager.addPlayer(animation, event.getPlayer()) );
+			//	info(ChatColor.RED + event.getPlayer().getName() + " has startet reciving animation packets for animation: " + ChatColor.GOLD + animation);
 			
 		}
 	}
