@@ -60,7 +60,7 @@ public class AnimationFrame implements Cloneable {
 					loc.getDouble("Z")
 					);
 			
-			schedule = frame.getInt("SHEDULE", animation.getSchedule());
+			schedule = frame.getInt("SCHEDULE", animation.getSchedule());
 			
 			if ( location == null )
 				location = animation.getLocation();

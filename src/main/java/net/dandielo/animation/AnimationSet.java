@@ -83,7 +83,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 	{
 		int total = schedule;
 		for ( AnimationFrame frame : frames )
-			total += frame.getShedule();
+			total += frame.getSchedule();
 		
 		return total;
 	}

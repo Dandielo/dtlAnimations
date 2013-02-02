@@ -1,14 +1,11 @@
 package net.dandielo;
 
-import static net.dandielo.bukkit.DtlAnimations.info;
-
 import java.util.List;
 
 import net.dandielo.animation.AnimationManager;
 import net.dandielo.animation.AnimationSet;
 import net.dandielo.bukkit.DtlAnimations;
 
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
