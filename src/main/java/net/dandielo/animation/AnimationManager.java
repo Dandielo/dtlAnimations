@@ -1,6 +1,5 @@
 package net.dandielo.animation;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,12 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.dandielo.bukkit.DtlAnimations;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class AnimationManager {

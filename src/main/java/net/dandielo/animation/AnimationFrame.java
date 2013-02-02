@@ -1,6 +1,5 @@
 package net.dandielo.animation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.dandielo.bukkit.DtlAnimations;
