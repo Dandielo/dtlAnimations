@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 public class AnimationFrame implements Cloneable {
 	private List<Packet52MultiBlockChange> data;
-	private int shedule;
+	private int schedule;
 	private Location location;
 	
 	private boolean defaultFrame; 
@@ -38,7 +38,7 @@ public class AnimationFrame implements Cloneable {
 					loc.getDouble("z")
 					);
 			
-			shedule = frame.getInt("shedule", animation.getShedule());
+			schedule = frame.getInt("schedule", animation.getSchedule());
 			
 			if ( location == null )
 				location = animation.getLocation();
@@ -60,7 +60,7 @@ public class AnimationFrame implements Cloneable {
 					loc.getDouble("Z")
 					);
 			
-			shedule = frame.getInt("SHEDULE", animation.getShedule());
+			schedule = frame.getInt("SHEDULE", animation.getSchedule());
 			
 			if ( location == null )
 				location = animation.getLocation();
@@ -92,9 +92,9 @@ public class AnimationFrame implements Cloneable {
 		}
 	}
 	
-	public int getShedule()
+	public int getSchedule()
 	{
-		return shedule;
+		return schedule;
 	}
 	
 }

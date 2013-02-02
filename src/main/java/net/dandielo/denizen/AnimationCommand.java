@@ -192,7 +192,7 @@ public class AnimationCommand extends AbstractCommand {
 							}
 						}
 
-					}, animations.get(script).totalSheduleTime() ));
+					}, animations.get(script).totalScheduleTime() ));
 		}
 	}
 

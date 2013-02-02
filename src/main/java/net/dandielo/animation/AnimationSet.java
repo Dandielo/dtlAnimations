@@ -15,7 +15,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 
 	private Location location;
 	private int distance; 
-	private int shedule;
+	private int schedule;
 
 	private int frame = 0;
 	private int repeats;
@@ -28,7 +28,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 
 		location = animation.location;
 		distance = animation.distance;
-		shedule = animation.shedule;
+		schedule = animation.schedule;
 	}
 	
 	public AnimationSet(ConfigurationSection animation)
@@ -43,7 +43,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		{
 			name = animation.getString("name", animation.getName());
 			distance = animation.getInt("distance", 60);
-			shedule = animation.getInt("shedule", 20);
+			schedule = animation.getInt("schedule", 20);
 			
 			ConfigurationSection loc = animation.getConfigurationSection("location"); 
 			location = new Location(DtlAnimations.getInstance().getServer().getWorld(loc.getString("world")),
@@ -60,7 +60,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		{
 			name = animation.getString("NAME", animation.getName());
 			distance = animation.getInt("DISTANCE", 60);
-			shedule = animation.getInt("SHEDULE", 20);
+			schedule = animation.getInt("SCHEDULE", 20);
 			
 			ConfigurationSection loc = animation.getConfigurationSection("LOCATION"); 
 			location = new Location(DtlAnimations.getInstance().getServer().getWorld(loc.getString("WORLD")),
@@ -79,9 +79,9 @@ public class AnimationSet implements Comparable<AnimationSet> {
 
 	}
 
-	public int totalSheduleTime()
+	public int totalScheduleTime()
 	{
-		int total = shedule;
+		int total = schedule;
 		for ( AnimationFrame frame : frames )
 			total += frame.getShedule();
 		
@@ -112,9 +112,9 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		return location;
 	}	
 
-	public int getShedule()
+	public int getSchedule()
 	{
-		return shedule;
+		return schedule;
 	}
 
 	public int getDistance()

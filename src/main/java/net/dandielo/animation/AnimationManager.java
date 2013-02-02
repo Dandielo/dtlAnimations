@@ -46,7 +46,7 @@ public class AnimationManager {
 	public void addAnimation(AnimationSet animation)
 	{
 		animations.put(animation, plugin.getServer().getScheduler()
-				.scheduleSyncDelayedTask(plugin, new EnviromentUpdate(animation), animation.getShedule()));
+				.scheduleSyncDelayedTask(plugin, new EnviromentUpdate(animation), animation.getSchedule()));
 		players.put(animation, Collections.synchronizedList(new LinkedList<Player>()) );
 
 		System.out.print("Curently running annimations: " + ++runningAnimations);
@@ -70,7 +70,7 @@ public class AnimationManager {
 	private void scheduleNextUpdate(AnimationSet animation, AnimationFrame frame) {
 		plugin.getServer().getScheduler().cancelTask(animations.get(animation));
 		animations.put(animation, plugin.getServer().getScheduler()
-				.scheduleSyncDelayedTask(plugin, new EnviromentUpdate(animation), frame.getShedule()) );
+				.scheduleSyncDelayedTask(plugin, new EnviromentUpdate(animation), frame.getSchedule()) );
 	}
 
 	public boolean addPlayer(AnimationSet animation, Player player)
@@ -152,7 +152,7 @@ public class AnimationManager {
 	public void addPlayerAnimation(AnimationSet animation, Player player)
 	{
 		animations.put(animation, plugin.getServer().getScheduler()
-				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), animation.getShedule()));
+				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), animation.getSchedule()));
 
 		System.out.print("Curently running annimations: " + ++runningAnimations);
 	}
@@ -175,7 +175,7 @@ public class AnimationManager {
 	private void scheduleNextPlayerUpdate(AnimationSet animation, AnimationFrame frame, Player player) {
 		plugin.getServer().getScheduler().cancelTask(animations.get(animation));
 		animations.put(animation, plugin.getServer().getScheduler()
-				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), frame.getShedule()) );
+				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), frame.getSchedule()) );
 	}
 
 	//Player update
