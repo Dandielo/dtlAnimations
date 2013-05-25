@@ -19,7 +19,7 @@ public class DtlAnimations extends JavaPlugin {
 	private static DtlAnimations instance;
 	private AnimationManager animationManager;
 	private PacketsManager packetsManager;
-	private FrameLoader loader;
+	protected FrameLoader loader;
 	
 	@Override
 	public void onEnable()

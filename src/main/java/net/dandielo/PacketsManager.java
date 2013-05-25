@@ -9,7 +9,7 @@ import java.util.Map;
 
 import net.dandielo.jnbt.ByteArrayTag;
 import net.dandielo.jnbt.CompoundTag;
-import net.dandielo.jnbt.IntTag;
+//import net.dandielo.jnbt.IntTag;
 import net.dandielo.jnbt.NBTInputStream;
 import net.dandielo.jnbt.ShortTag;
 import net.dandielo.jnbt.StringTag;
@@ -18,7 +18,6 @@ import net.minecraft.server.v1_5_R3.Packet52MultiBlockChange;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.util.Vector;
 
 public class PacketsManager {
 
@@ -71,8 +70,8 @@ public class PacketsManager {
 		FileInputStream stream = new FileInputStream(file);
 		NBTInputStream nbtStream = new NBTInputStream(new java.util.zip.GZIPInputStream(stream));
 
-		Vector origin = new Vector();
-		Vector offset = new Vector();
+	//	Vector origin = new Vector();
+	//	Vector offset = new Vector();
 
 		// Schematic tag
 		CompoundTag schematicTag = (CompoundTag) nbtStream.readTag();
@@ -94,11 +93,11 @@ public class PacketsManager {
 		short length = getChildTag(schematic, "Length", ShortTag.class).getValue();
 		short height = getChildTag(schematic, "Height", ShortTag.class).getValue();
 
-		try {
+	/*	try {
 			int originX = getChildTag(schematic, "WEOriginX", IntTag.class).getValue();
 			int originY = getChildTag(schematic, "WEOriginY", IntTag.class).getValue();
 			int originZ = getChildTag(schematic, "WEOriginZ", IntTag.class).getValue();
-			origin = new org.bukkit.util.Vector(originX, originY, originZ);
+	//		origin = new org.bukkit.util.Vector(originX, originY, originZ);
 		} catch (Exception e) {
 			// No origin data
 		}
@@ -107,10 +106,10 @@ public class PacketsManager {
 			int offsetX = getChildTag(schematic, "WEOffsetX", IntTag.class).getValue();
 			int offsetY = getChildTag(schematic, "WEOffsetY", IntTag.class).getValue();
 			int offsetZ = getChildTag(schematic, "WEOffsetZ", IntTag.class).getValue();
-			offset = new Vector(offsetX, offsetY, offsetZ);
+	//		offset = new Vector(offsetX, offsetY, offsetZ);
 		} catch (Exception e) {
 			// No offset data
-		}
+		}*/
 
 		// Check type of Schematic
 		String materials = getChildTag(schematic, "Materials", StringTag.class).getValue();

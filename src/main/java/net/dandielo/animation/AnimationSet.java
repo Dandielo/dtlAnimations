@@ -21,6 +21,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 	private int repeats;
 	
 	//added for clonning
+	@SuppressWarnings("unchecked")
 	private AnimationSet(AnimationSet animation)
 	{
 		name = animation.name;
