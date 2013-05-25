@@ -13,7 +13,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.aufdemrand.denizen.utilities.runnables.Runnable1;
 import net.dandielo.animation.AnimationSet;
 import net.dandielo.bukkit.DtlAnimations;
 
@@ -77,8 +76,8 @@ import net.dandielo.bukkit.DtlAnimations;
  *
  */
 
-public class AnimationCommand extends AbstractCommand {
-
+public class AnimationCommand { //extends AbstractCommand {
+/*
 	private enum AnimationAction { START, STOP }
 	private DtlAnimations animator;
 
@@ -227,5 +226,5 @@ public class AnimationCommand extends AbstractCommand {
 		}
 
 	}
-
+*/
 }
