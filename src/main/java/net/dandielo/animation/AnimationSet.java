@@ -18,7 +18,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 	private int schedule;
 
 	private int frame = 0;
-	private int repeats;
+	private int repeats = 0;
 	
 	//added for clonning
 	@SuppressWarnings("unchecked")
@@ -62,6 +62,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 			name = animation.getString("NAME", animation.getName());
 			distance = animation.getInt("DISTANCE", 60);
 			schedule = animation.getInt("SCHEDULE", 20);
+			
 			
 			ConfigurationSection loc = animation.getConfigurationSection("LOCATION"); 
 			location = new Location(DtlAnimations.getInstance().getServer().getWorld(loc.getString("WORLD")),

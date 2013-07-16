@@ -9,8 +9,8 @@
   
    <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<craftbukkit.version>1.5.2-R0.2-SNAPSHOT</craftbukkit.version>
-		<denizen.version>0.8.8-PRERELEASE</denizen.version>
+		<craftbukkit.version>1.6.2-R0.1-SNAPSHOT</craftbukkit.version>
+		<denizen.version>0.9.2-SNAPSHOT</denizen.version>
 				<build.number>Unknown</build.number>
 	</properties>
 
@@ -23,10 +23,6 @@
 		<repository>
 			<id>everything</id>
 			<url>http://repo.citizensnpcs.com</url>
-		</repository>
-		<repository>
-			<id>thirdparty</id>
-			<url>http://93.181.141.191:8081/nexus/content/repositories/thirdparty/</url>
 		</repository>
 	</repositories> 
 	

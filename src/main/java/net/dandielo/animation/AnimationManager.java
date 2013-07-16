@@ -142,8 +142,13 @@ public class AnimationManager {
 						it.remove();
 				}
 				
+				
+				if ( animation.repeat() )
+				    scheduleNextUpdate(animation, frame);
+				else
+					removeAnimation(animation);
+				
 				animation.nextFrame();
-				scheduleNextUpdate(animation, frame);
 			}
 		}
 	}

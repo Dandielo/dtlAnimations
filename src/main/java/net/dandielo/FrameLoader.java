@@ -85,7 +85,9 @@ public class FrameLoader {
 			{
 				ConfigurationSection animation = animations.getConfigurationSection(buildPath(key));
 				
-				manager.addAnimation(new AnimationSet(animation));
+				AnimationSet anim = new AnimationSet(animation);
+				anim.setRepeats(-2);
+				manager.addAnimation(anim);
 			}			
 			
 		} 

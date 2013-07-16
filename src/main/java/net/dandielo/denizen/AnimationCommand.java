@@ -8,9 +8,10 @@ import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.dandielo.animation.AnimationSet;
@@ -76,18 +77,18 @@ import net.dandielo.bukkit.DtlAnimations;
  *
  */
 
-public class AnimationCommand { //extends AbstractCommand {
-/*
+public class AnimationCommand extends AbstractCommand {
+
 	private enum AnimationAction { START, STOP }
 	private DtlAnimations animator;
 
 	public AnimationCommand() {
-		this.activate().as("ANIMATION").withOptions("({START}|STOP) [SCRIPT:animation_script]", 1);
+		this.activate().as("ANIMATION").withOptions("({START}|STOP) [SCRIPT:animation_script] ({ENVIROMENT}|PLAYER)", 1);
 	}
 
 	@Override
 	public void onEnable() {
-		animator = (DtlAnimations) Bukkit.getPluginManager().getPlugin("DtlAnimations");
+		animator = (DtlAnimations) Bukkit.getPluginManager().getPlugin("dtlAnimations");
 	}
 
 	@Override
@@ -106,7 +107,7 @@ public class AnimationCommand { //extends AbstractCommand {
 		for (String arg : scriptEntry.getArguments()) {
 
 			// matchesScript will ensure there is an actual script with this name loaded
-			if (aH.matchesScript(arg)) {
+			if (arg.startsWith("SCRIPT:")) {
 				// All script names for denizen are upper-case to avoid case sensitivity
 				script = aH.getStringFrom(arg).toUpperCase();
 				dB.echoDebug("...set SCRIPT: '%s'", script);
@@ -153,13 +154,13 @@ public class AnimationCommand { //extends AbstractCommand {
 			throws CommandExecutionException {
 
 		// Grab objects needed from scriptEntry
-		String script = (String) scriptEntry.getObject("script");
+		final String script = (String) scriptEntry.getObject("script");
 
 		// Execute!
 		switch ((AnimationAction) scriptEntry.getObject("action")) {
 
 		case START:
-			startAnimation(script, (String) scriptEntry.getObject("scoope"), (Integer) scriptEntry.getObject("repeats"), scriptEntry.getPlayer());
+			startAnimation(script, (String) scriptEntry.getObject("scoope"), (Integer) scriptEntry.getObject("repeats"), scriptEntry.getPlayer().getPlayerEntity());
 			break;
 
 		case STOP:
@@ -169,7 +170,7 @@ public class AnimationCommand { //extends AbstractCommand {
 
 		// Handle duration, if set, add this maybe in future
 		int duration = (Integer) scriptEntry.getObject("repeats");//(Integer) scriptEntry.getObject("duration");
-		if (duration > 0 && (AnimationAction) scriptEntry.getObject("action") == AnimationAction.START) {
+		if ( false && duration > 0 && (AnimationAction) scriptEntry.getObject("action") == AnimationAction.START) {
 
 			// If this script already has a duration, stop the task so a new one can be made
 			if (durations.containsKey(script))
@@ -179,10 +180,11 @@ public class AnimationCommand { //extends AbstractCommand {
 			// Add this delayed task to the duration map
 			durations.put(script, 
 					denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen, 
-							new Runnable1<String>(script) {
+							new Runnable() {
 
 						@Override
-						public void run(String script) {
+						public void run()
+						{
 							try {
 								dB.log(Messages.DEBUG_RUNNING_DELAYED_TASK, "Stop ANIMATION '" + script + "'");
 								stopAnimation(script);
@@ -206,7 +208,7 @@ public class AnimationCommand { //extends AbstractCommand {
 		if (animations.containsKey(script)) {
 			dB.echoDebug("Animation '%s' is already running.", script);
 		} else {
-			animations.put(script, new AnimationSet(denizen.getScripts().getConfigurationSection(script)));
+			animations.put(script, new AnimationSet(ScriptHelper._gs().getConfigurationSection(script)));
 			animations.get(script).setRepeats(repeats);
 			if ( scoope.equalsIgnoreCase("player") )
 				animator.getAnimationManager().addPlayerAnimation(animations.get(script).runAs(player.getName()), player);
@@ -226,5 +228,5 @@ public class AnimationCommand { //extends AbstractCommand {
 		}
 
 	}
-*/
+
 }

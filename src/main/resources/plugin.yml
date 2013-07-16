@@ -1,6 +1,6 @@
-name: DtlAnimations
+name: dtlAnimations
 main: net.dandielo.bukkit.DtlAnimations
-version: 0.1A
+version: 1.0.0 Beta
 softdepend: [Denizen]
 description: >
              | Animations using schematics as frames
