@@ -170,7 +170,7 @@ public class AnimationCommand extends AbstractCommand {
 
 		// Handle duration, if set, add this maybe in future
 		int duration = (Integer) scriptEntry.getObject("repeats");//(Integer) scriptEntry.getObject("duration");
-		if ( false && duration > 0 && (AnimationAction) scriptEntry.getObject("action") == AnimationAction.START) {
+		if ( duration > 0 && (AnimationAction) scriptEntry.getObject("action") == AnimationAction.START) {
 
 			// If this script already has a duration, stop the task so a new one can be made
 			if (durations.containsKey(script))
@@ -193,7 +193,7 @@ public class AnimationCommand extends AbstractCommand {
 							}
 						}
 
-					}, animations.get(script).totalScheduleTime() ));
+					}, animations.get(script).totalScheduleTime() + animations.get(script).totalScheduleTime() * duration ));
 		}
 	}
 
@@ -209,7 +209,7 @@ public class AnimationCommand extends AbstractCommand {
 			dB.echoDebug("Animation '%s' is already running.", script);
 		} else {
 			animations.put(script, new AnimationSet(ScriptHelper._gs().getConfigurationSection(script)));
-			animations.get(script).setRepeats(repeats);
+		//	animations.get(script).setRepeats(repeats);
 			if ( scoope.equalsIgnoreCase("player") )
 				animator.getAnimationManager().addPlayerAnimation(animations.get(script).runAs(player.getName()), player);
 			else
