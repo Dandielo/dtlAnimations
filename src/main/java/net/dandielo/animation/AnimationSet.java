@@ -2,7 +2,7 @@ package net.dandielo.animation;
 
 import java.util.ArrayList;
 
-import net.dandielo.FrameLoader;
+import net.dandielo.AnimationLoader;
 import net.dandielo.bukkit.DtlAnimations;
 
 import org.bukkit.Location;
@@ -19,6 +19,18 @@ public class AnimationSet implements Comparable<AnimationSet> {
 
 	private int frame = 0;
 	private int repeats = 0;
+	
+
+	public AnimationSet(String name)
+	{
+		this.name = name;
+		frames = new ArrayList<AnimationFrame>();
+		
+		distance = 90;
+		schedule = 40;
+		location = null;
+		
+	}
 	
 	//added for clonning
 	@SuppressWarnings("unchecked")
@@ -54,7 +66,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 					);
 			
 			for ( String frame : animation.getConfigurationSection("frames").getKeys(false) )
-				frames.add( new AnimationFrame(this, animation.getConfigurationSection( FrameLoader.buildPath("frames",frame) )) );
+				frames.add( new AnimationFrame(this, animation.getConfigurationSection( AnimationLoader.buildPath("frames",frame) )) );
 		} 
 		
 		else // Try uppercase keys (because of Denizen)	
@@ -80,6 +92,16 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		System.out.print("Loaded animation " + name + " with " + frames.size() + " frames.");
 
 	}
+	
+	public void setSchedule(int s)
+	{
+		schedule = s;
+	}
+	
+	public void setDistance(int d)
+	{
+		distance = d;
+	}
 
 	public int totalScheduleTime()
 	{
@@ -102,6 +124,11 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		
 		if ( frames.size() == frame + 1 && repeats >= 0 )
 			--repeats;
+	}
+	
+	public void addFrame(AnimationFrame frame)
+	{
+		frames.add(frame);
 	}
 
 	public AnimationFrame getFrame()
@@ -156,11 +183,24 @@ public class AnimationSet implements Comparable<AnimationSet> {
 		return repeats >= 0 || repeats == -2;
 	}
 	
+	private boolean isPlayerAnim = false;
+	
+	public boolean isPlayerAnim()
+	{
+		return this.isPlayerAnim;
+	}
+	
 	//So animations can be added multiplied for a player
-	public AnimationSet runAs(String player)
+	public AnimationSet runAsPlayer(String player)
 	{
 		AnimationSet animation = new AnimationSet(this);
 		animation.name += "_" + player;
+		animation.isPlayerAnim = true;
 		return animation;
+	}
+
+	public void setLocation(Location loc)
+	{
+		location = loc;
 	}
 }

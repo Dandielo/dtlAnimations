@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
 
-	private AnimationManager manager = DtlAnimations.getInstance().getAnimationManager();
+	private AnimationManager manager = DtlAnimations.getInstance().getManager();
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event)

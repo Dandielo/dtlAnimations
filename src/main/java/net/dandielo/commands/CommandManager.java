@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import net.dandielo.bukkit.DtlAnimations;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -52,6 +53,7 @@ public class CommandManager {
 		executor = new Executor(this);
 
 		DtlAnimations.getInstance().getCommand("anim").setExecutor(executor);
+		DtlAnimations.getInstance().getCommand("frame").setExecutor(executor);
 	}
 	
 	/**
@@ -121,18 +123,12 @@ public class CommandManager {
 	 * @return
 	 * always so all command messages are handler byt this manager
 	 */
-	public boolean execute(String name,  String[] args, CommandSender sender)
+	public boolean execute(String name, String[] args, CommandSender sender)
 	{
 		for ( Map.Entry<CommandSyntax, CommandBinding> command : commands.entrySet() )
 			if ( new CommandSyntax(name, args).equals(command.getKey()) )
 			{
-				if ( command.getValue().requiresNpc() )
-				{
-				//	locale.sendMessage(sender, "error-npc-not-selected");
-					return true;
-				}
-				else
-					return command.getValue().execute(sender, args);
+				return command.getValue().execute(sender, args);
 			}
 		//locale.sendMessage(sender, "error-command-invalid");
 		return true;
@@ -257,7 +253,6 @@ public class CommandManager {
 		private CommandSyntax syntax;
 		private Class<?> clazz;
 		private String perm;
-		private boolean req;
 		
 		public CommandBinding(Class<?> clazz, Method method, CommandSyntax syntax, Command cmd) 
 		{
@@ -265,10 +260,6 @@ public class CommandManager {
 			this.method = method;
 			this.syntax = syntax;
 			this.perm = cmd.perm();
-		}
-		
-		public boolean requiresNpc() {
-			return req;
 		}
 		
 		/**
@@ -284,9 +275,10 @@ public class CommandManager {
 		 */
 		public Boolean execute(CommandSender sender, String[] args)
 		{
-			if ( sender.hasPermission(perm) )//!perms.has(sender, perm) )
+			System.out.print(sender.getName());
+			if ( !sender.hasPermission(perm) )//!perms.has(sender, perm) )
 			{
-			//	locale.sendMessage(sender, "error-nopermission-command");
+			    sender.sendMessage(ChatColor.RED + "You dont have permissions for this command");
 				return true;
 			}
 			try 

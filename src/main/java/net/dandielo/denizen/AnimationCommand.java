@@ -211,9 +211,9 @@ public class AnimationCommand extends AbstractCommand {
 			animations.put(script, new AnimationSet(ScriptHelper._gs().getConfigurationSection(script)));
 		//	animations.get(script).setRepeats(repeats);
 			if ( scoope.equalsIgnoreCase("player") )
-				animator.getAnimationManager().addPlayerAnimation(animations.get(script).runAs(player.getName()), player);
+				animator.getManager().addPlayerAnimation(animations.get(script).runAsPlayer(player.getName()), player);
 			else
-				animator.getAnimationManager().addAnimation(animations.get(script));
+				animator.getManager().addAnimation(animations.get(script));
 		}
 	}
 
@@ -221,7 +221,7 @@ public class AnimationCommand extends AbstractCommand {
 	private void stopAnimation(String script) {
 		if (animations.containsKey(script)) {
 			dB.echoDebug("Stopping animation '%s'.", script);
-			animator.getAnimationManager().removeAnimation(animations.get(script));
+			animator.getManager().removeAnimation(animations.get(script));
 			animations.remove(script);
 		} else {
 			dB.echoDebug("Animation '%s' is not running.", script);		

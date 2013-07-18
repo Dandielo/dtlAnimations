@@ -49,7 +49,7 @@ public class AnimationManager {
 				.scheduleSyncDelayedTask(plugin, new EnviromentUpdate(animation), animation.getSchedule()));
 		players.put(animation, Collections.synchronizedList(new LinkedList<Player>()) );
 
-		System.out.print("Curently running annimations: " + ++runningAnimations);
+		DtlAnimations.info("Curently running annimations: " + ++runningAnimations);
 	}
 
 	public void removeAnimation(AnimationSet animation) {
@@ -63,7 +63,7 @@ public class AnimationManager {
 		}
 		
 		//check how many animations are running
-		System.out.print("Curently running annimations: " + runningAnimations);
+		DtlAnimations.info("Curently running annimations: " + runningAnimations);
 	}
 	
 	
@@ -159,7 +159,7 @@ public class AnimationManager {
 		animations.put(animation, plugin.getServer().getScheduler()
 				.scheduleSyncDelayedTask(plugin, new PlayerUpdate(animation, player), animation.getSchedule()));
 
-		System.out.print("Curently running annimations: " + ++runningAnimations);
+		DtlAnimations.info("Curently running annimations: " + ++runningAnimations);
 	}
 	
 	public void removePlayerAnimation(AnimationSet animation) {
@@ -174,7 +174,7 @@ public class AnimationManager {
 		}
 		
 		//check how many animations are running
-		System.out.print("Curently running annimations: " + runningAnimations);
+		DtlAnimations.info("Curently running annimations: " + runningAnimations);
 	}
 	
 	private void scheduleNextPlayerUpdate(AnimationSet animation, AnimationFrame frame, Player player) {
@@ -212,6 +212,22 @@ public class AnimationManager {
 				
 				animation.nextFrame();
 			}
+		}
+	}
+
+	public boolean isRunning(AnimationSet anim)
+	{
+		return animations.containsKey(anim);
+	}
+	
+	public void removeAllAnimations()
+	{
+		for ( AnimationSet anim : animations.keySet() )
+		{
+			if ( anim.isPlayerAnim() )
+				removePlayerAnimation(anim);
+			else
+				removeAnimation(anim);
 		}
 	}
 

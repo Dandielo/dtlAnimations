@@ -18,6 +18,34 @@ public class AnimationFrame implements Cloneable {
 	
 	private boolean defaultFrame; 
 	
+	public AnimationFrame(AnimationSet animation, String filename)
+	{
+		String filepath = "plugins/dtlAnimations/frames";
+		
+		schedule = animation.getSchedule();
+		location = animation.getLocation();
+		
+		defaultFrame = false;
+		
+		try
+		{
+			data = DtlAnimations.getInstance().getPacketsManager().fromSchematic(filepath, filename, location);
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void setScheduleTime(int s)
+	{
+		schedule = s;
+	}
+	
+	public void setLocation(Location loc)
+	{
+		location = loc;
+	}
+	
 	public AnimationFrame(AnimationSet animation, ConfigurationSection frame)
 	{
 		String filepath = "";
@@ -25,7 +53,7 @@ public class AnimationFrame implements Cloneable {
 
 		if (frame.contains("file"))
 		{
-			filepath = frame.getString("path", "plugins/DtlAnimations/frames");
+			filepath = frame.getString("path", "plugins/dtlAnimations/frames");
 			filename = frame.getString("file");
 			
 			defaultFrame = frame.getBoolean("default", false);
@@ -47,7 +75,7 @@ public class AnimationFrame implements Cloneable {
 		//duplication for denizen scripts
 		else
 		{
-			filepath = frame.getString("PATH", "plugins/DtlAnimations/frames");
+			filepath = frame.getString("PATH", "plugins/dtlAnimations/frames");
 			filename = frame.getString("FILE");
 			
 			defaultFrame = frame.getBoolean("DEFAULT", false);
@@ -71,8 +99,6 @@ public class AnimationFrame implements Cloneable {
 			data = DtlAnimations.getInstance().getPacketsManager().fromSchematic(filepath, filename, location);
 		} catch (Exception e) 
 		{
-			//TODO nice debuger 
-		//	System.out.print("Failed to load frame from: " + filepath.replace('\\', '/') + "/" + filename);
 			e.printStackTrace();
 		}
 	}

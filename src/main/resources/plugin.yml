@@ -1,6 +1,12 @@
 name: dtlAnimations
 main: net.dandielo.bukkit.DtlAnimations
-version: 1.0.0 Beta
+version: 1.2.0 Beta
+depend: [WorldEdit]
 softdepend: [Denizen]
 description: >
              | Animations using schematics as frames
+commands:
+  anim: 
+    description: dtlAnimation commands
+  frame:  
+    description: animation frame commands

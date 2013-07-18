@@ -12,17 +12,17 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class FrameLoader {
+public class AnimationLoader {
 
-	private static AnimationManager manager = DtlAnimations.getInstance().getAnimationManager();
+	private static AnimationManager manager = DtlAnimations.getInstance().getManager();
 	
-	private final static char PATH_SEPARATOR = '/';
+	private final static char PATH_SEPARATOR = '.';
 	protected boolean separateFiles;
 
 	protected FileConfiguration animations;
 	protected File animationsFile;	
 	
-	public FrameLoader(ConfigurationSection config)
+	public AnimationLoader(ConfigurationSection config)
 	{
 //		ConfigurationSection config = DtlAnimations.getInstance().getConfig();
 
@@ -36,7 +36,7 @@ public class FrameLoader {
 			config.set("file", "animations.yml");
 		}
 
-		String baseDir = config.getString("basedir", "plugins/DtlAnimations" );// "plugins/PermissionsEx");
+		String baseDir = config.getString("basedir", "plugins/dtlAnimations" );// "plugins/PermissionsEx");
 
 		if ( baseDir.contains("\\") && !"\\".equals(File.separator) ) 
 		{
@@ -75,12 +75,14 @@ public class FrameLoader {
 	public void reload() {
 		animations = new YamlConfiguration();
 		animations.options().pathSeparator(PATH_SEPARATOR);
+		
+		//remove each annimation so it can be reloaded
+		manager.removeAllAnimations();
 				
 		try 
 		{
-			System.out.print(animationsFile);
 			animations.load(animationsFile);
-			System.out.print(animations);
+
 			for ( String key : animations.getKeys(false) )
 			{
 				ConfigurationSection animation = animations.getConfigurationSection(buildPath(key));
@@ -100,6 +102,19 @@ public class FrameLoader {
 			throw new IllegalStateException("Error loading animations file", e);
 		}
 	}
+	
+	public AnimationSet getAnimation(String name)
+	{
+		AnimationSet anim = new AnimationSet(animations.getConfigurationSection(buildPath(name)));
+		anim.setRepeats(-2);
+		return anim;
+	}
+	
+	public void addAnnimationYaml(String name, YamlConfiguration anim)
+	{
+		this.animations.set(name, anim.getConfigurationSection(name));
+		save();
+	}
 
 	public void save() {
 		try 
@@ -108,7 +123,6 @@ public class FrameLoader {
 		} 
 		catch (IOException e) 
 		{
-		//	severe("Error during saving warps file: " + e.getMessage());
 		}
 	}
 	

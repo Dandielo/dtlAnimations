@@ -2,15 +2,19 @@ package net.dandielo.bukkit;
 
 import java.util.logging.Logger;
 
-import net.dandielo.FrameLoader;
+import net.dandielo.AnimationLoader;
 import net.dandielo.PacketsManager;
 import net.dandielo.PlayerListener;
 import net.dandielo.animation.AnimationManager;
+import net.dandielo.bukkit.commands.AnimationCommands;
+import net.dandielo.commands.CommandManager;
 import net.dandielo.denizen.AnimationCommand;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 public class DtlAnimations extends JavaPlugin {
 	protected final static Logger logger = Logger.getLogger("Minecraft");
@@ -19,7 +23,10 @@ public class DtlAnimations extends JavaPlugin {
 	private static DtlAnimations instance;
 	private AnimationManager animationManager;
 	private PacketsManager packetsManager;
-	protected FrameLoader loader;
+	protected AnimationLoader loader;
+	
+	//Worldeditplugin needed
+	private WorldEditPlugin we;
 	
 	@Override
 	public void onEnable()
@@ -33,17 +40,41 @@ public class DtlAnimations extends JavaPlugin {
 
 		packetsManager = new PacketsManager();
 		animationManager = new AnimationManager();
-		loader = new FrameLoader(getConfig());
+		loader = new AnimationLoader(getConfig());
 		
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		
 		if (getServer().getPluginManager().getPlugin("Denizen") != null)
 			new AnimationCommand();
+		
+		CommandManager.manager.registerCommands(AnimationCommands.class);
+		
+		we = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+	    if(we == null)
+	    {
+	        info("Error with region undoing! Error: WorldEdit is null.");   
+	    }
+	    else
+	    {
+	    	info("WordlEdit loaded successfuly!");
+	    }
+	    
+	    AnimationCommands.we = we;
 	}
 	
-	public AnimationManager getAnimationManager()
+	public WorldEditPlugin getWE()
+	{
+		return we;
+	}
+	
+	public AnimationManager getManager()
 	{
 		return animationManager;
+	}
+	
+	public AnimationLoader getLoader()
+	{
+		return loader;
 	}
 	
 	//Plugin static methods
