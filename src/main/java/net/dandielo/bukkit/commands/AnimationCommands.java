@@ -163,6 +163,21 @@ public class AnimationCommands implements Listener {
 
 	@Command(
 	name = "anim",
+	syntax = "cancel",
+	perm = "dtl.anim.commands.cancel")
+	public void cancelAnimation(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
+	{
+		if ( !(sender instanceof Player) ) return;
+		if ( !players.containsKey(sender.getName()) ) return;
+
+		AnimCreationSteps steps = players.get(sender.getName());
+		sender.sendMessage(ChatColor.AQUA + "Creation cancelled: " + ChatColor.DARK_AQUA + steps.asAnimation().toString());
+		
+		players.remove(sender.getName());
+	}
+	
+	@Command(
+	name = "anim",
 	syntax = "start <name>",
 	perm = "dtl.anim.commands.start")
 	public void startAnim(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
