@@ -122,7 +122,7 @@ public class PacketsManager {
 		byte[] blockData = getChildTag(schematic, "Data", ByteArrayTag.class).getValue();
 		short[] blocks = new short[rawBlocks.length];
 
-		if (schematic.containsKey("AddBlocks")) {
+		/*if (schematic.containsKey("AddBlocks")) {
 			byte[] addBlockIds = getChildTag(schematic, "AddBlocks", ByteArrayTag.class).getValue();
 			for (int i = 0, index = 0; i < addBlockIds.length && index < blocks.length; ++i) {
 				blocks[index] = (short) (((addBlockIds[i] >> 4) << 8) + (rawBlocks[index++] & 0xFF));
@@ -130,11 +130,11 @@ public class PacketsManager {
 					blocks[index] = (short) (((addBlockIds[i] & 0xF) << 8) + (rawBlocks[index++] & 0xFF));
 				}
 			}
-		} else {
+		} else {*/
 			for (int i = 0; i < rawBlocks.length; ++i) {
-				blocks[i] = (short) (rawBlocks[i] & 0xFF);
+				blocks[i] = (short) (((rawBlocks[i] & 0xFF) << 4 ) | ( blockData[i] & 0x0F ));
 			}
-		}
+	//	}
 		
 //		for (int x = 0; x < width; ++x) {
 //			for (int y = 0; y < height; ++y) {
@@ -198,8 +198,8 @@ public class PacketsManager {
 					
 					data[0] = (byte) ( ( bcx << 4 ) | bcz ); 
 					data[1] = (byte) ((byte) y + osY);
-					data[2] = (byte) ( blocks[index] >> 4 );
-					data[3] = (byte) ((byte) ( ( blocks[index] & 0x0000000f ) << 4 ) | ( 0x01 & blockData[index] ) );
+					data[2] = (byte) ( blocks[index] >> 8 );
+					data[3] = (byte) ((byte) ( blocks[index] & 0x00f0 ) | ( 0x000f & blocks[index] ) );
 					
 					packets.get(c).add(data);
 				}
