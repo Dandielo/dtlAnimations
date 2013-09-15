@@ -2,6 +2,7 @@ package net.dandielo.bukkit.commands;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import net.dandielo.animation.AnimationFrame;
@@ -42,26 +43,87 @@ public class AnimationCommands implements Listener {
 		if ( !(sender instanceof Player) ) return;
 		if ( players.containsKey(sender.getName()) ) return;
 
-		AnimCreationSteps steps = new AnimCreationSteps(args.get("name"), ((Player)sender).getLocation());
+		AnimCreationSteps steps = new AnimCreationSteps(args.get("name"));
 
 		players.put(sender.getName(), steps);
 		steps.setSession(DtlAnimations.getInstance().getWE().getSession((Player) sender));
 
 		sender.sendMessage(ChatColor.AQUA + "Started a new animation setup: " + ChatColor.DARK_AQUA + args.get("name"));
 	}
+	
+	@Command(
+	name = "anim",
+	syntax = "load <name>",
+	perm = "dtl.anim.commands.load")
+	public void loadAnimation(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
+	{
+		if ( !(sender instanceof Player) ) return;
+		if ( players.containsKey(sender.getName()) ) return;
+
+		
+		AnimCreationSteps steps = new AnimCreationSteps(args.get("name"), true);
+
+		players.put(sender.getName(), steps);
+		steps.setSession(DtlAnimations.getInstance().getWE().getSession((Player) sender));
+		sender.sendMessage(ChatColor.AQUA + "Loaded animation: " + ChatColor.DARK_AQUA + args.get("name"));
+	}
 
 	@Command(
 	name = "frame",
 	syntax = "save <frame>",
-	perm = "dtl.anim.commands.create-frame")
+	perm = "dtl.anim.commands.save-frame")
 	public void saveFrame(DtlAnimations plugin, CommandSender sender, Map<String, String> args) throws IncompleteRegionException
 	{
 		if ( !(sender instanceof Player) ) return;
 		AnimCreationSteps steps = players.get(sender.getName());
 		if ( !steps.areaEditStep() ) return;
 
-		steps.saveFrame((Player) sender, args.get("frame"));
+		steps.saveFrame((Player) sender, args.get("frame"), steps.frameCount());
 		sender.sendMessage(ChatColor.AQUA + "Frame saved: " + ChatColor.DARK_AQUA + args.get("frame"));
+	}
+
+	@Command(
+	name = "frame",
+	syntax = "saveat <index> <frame>",
+	perm = "dtl.anim.commands.saveat-frame")
+	public void saveFrameAt(DtlAnimations plugin, CommandSender sender, Map<String, String> args) throws IncompleteRegionException
+	{
+		if ( !(sender instanceof Player) ) return;
+		AnimCreationSteps steps = players.get(sender.getName());
+		if ( !steps.areaEditStep() ) return;
+
+		steps.saveFrame((Player) sender, args.get("frame"), Integer.parseInt(args.get("index")));
+		sender.sendMessage(ChatColor.AQUA + "Frame saved: " + ChatColor.DARK_AQUA + args.get("frame"));
+	}
+
+	@Command(
+	name = "frame",
+	syntax = "replace <frame>",
+	perm = "dtl.anim.commands.replace-frame")
+	public void saveFrameAs(DtlAnimations plugin, CommandSender sender, Map<String, String> args) throws IncompleteRegionException
+	{
+		if ( !(sender instanceof Player) ) return;
+		AnimCreationSteps steps = players.get(sender.getName());
+		if ( !steps.areaEditStep() ) return;
+
+		steps.saveFrame((Player) sender, args.get("frame"), steps.frameCount());
+		sender.sendMessage(ChatColor.AQUA + "Frame replaced: " + ChatColor.DARK_AQUA + args.get("frame"));
+	}
+	
+	@Command(
+	name = "frame",
+	syntax = "edit <frame>",
+	perm = "dtl.anim.commands.edit-frame")
+	public void editFrame(DtlAnimations plugin, CommandSender sender, Map<String, String> args) throws IncompleteRegionException
+	{
+		if ( !(sender instanceof Player) ) return;
+		AnimCreationSteps steps = players.get(sender.getName());
+		if ( !steps.frameSettingStep() ) return;
+
+		if ( steps.editFrame(args.get("frame")) )
+		    sender.sendMessage(ChatColor.AQUA + "Frame loaded and pasted");
+		else
+			sender.sendMessage(ChatColor.AQUA + "Frame not found");
 	}
 
 	@Command(
@@ -99,6 +161,67 @@ public class AnimationCommands implements Listener {
 		steps.nextFrame();
 		
 		sender.sendMessage(ChatColor.AQUA + "Now set your next frame");
+	}
+
+	@Command(
+	name = "frame",
+	syntax = "list",
+	perm = "dtl.anim.commands.list-frame")
+	public void frameList(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
+	{
+		if ( !(sender instanceof Player) ) return;
+		AnimCreationSteps steps = players.get(sender.getName());
+		
+		StringBuilder builder = new StringBuilder();
+		for ( AnimationFrame frame : steps.incompleteAnimation().getFrames() )
+			builder.append(", " + ChatColor.DARK_AQUA + frame.getName() + ChatColor.AQUA);
+		
+		//send the frame list list
+		sender.sendMessage(ChatColor.AQUA + "Frame list: " + builder.toString().substring(2));
+	}
+	
+	@Command(
+	name = "frame",
+	syntax = "remove <name>",
+	perm = "dtl.anim.commands.remove-frame")
+	public void frameRemove(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
+	{
+		if ( !(sender instanceof Player) ) return;
+		AnimCreationSteps steps = players.get(sender.getName());
+		if ( !steps.frameSettingStep() ) return;
+		
+		if ( steps.removeFrame(args.get("name")) )
+		    sender.sendMessage(ChatColor.AQUA + "Frame removed sucessfuly");
+		else
+		    sender.sendMessage(ChatColor.AQUA + "Frame not found");
+	}
+	
+	@Command(
+	name = "frame",
+	syntax = "show <name>",
+	perm = "dtl.anim.commands.show-frame")
+	public void frameShow(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
+	{
+		if ( !(sender instanceof Player) ) return;
+		AnimCreationSteps steps = players.get(sender.getName());
+		if ( !steps.frameSettingStep() ) return;
+		
+		steps.showFrame(args.get("name"));
+		sender.sendMessage(ChatColor.AQUA + "Frame pasted");
+	}
+	
+	@Command(
+	name = "frame",
+	syntax = "cancel",
+	perm = "dtl.anim.commands.show-frame")
+	public void frameCancel(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
+	{
+		if ( !(sender instanceof Player) ) return;
+		AnimCreationSteps steps = players.get(sender.getName());
+		if ( !steps.areaEditStep() ) return;
+		
+		steps.cancelFrame();
+		sender.sendMessage(ChatColor.AQUA + "Cancelled frame creation");
 	}
 	
 	@Command(
@@ -153,10 +276,10 @@ public class AnimationCommands implements Listener {
 		if ( !players.containsKey(sender.getName()) ) return;
 
 		AnimCreationSteps steps = players.get(sender.getName());
-		plugin.getLoader().addAnnimationYaml(steps.asAnimation().toString(), steps.asYaml());
+		plugin.getLoader().addAnnimationYaml(steps.completeAnimation().toString(), steps.asYaml());
 		//DtlAnimations.getInstance().getAnimationManager().addAnimation(steps.asAnimation());
 		
-		sender.sendMessage(ChatColor.AQUA + "Animation finished: " + ChatColor.DARK_AQUA + steps.asAnimation().toString());
+		sender.sendMessage(ChatColor.AQUA + "Animation finished: " + ChatColor.DARK_AQUA + steps.completeAnimation().toString());
 		
 		players.remove(sender.getName());
 	}
@@ -171,9 +294,17 @@ public class AnimationCommands implements Listener {
 		if ( !players.containsKey(sender.getName()) ) return;
 
 		AnimCreationSteps steps = players.get(sender.getName());
-		sender.sendMessage(ChatColor.AQUA + "Creation cancelled: " + ChatColor.DARK_AQUA + steps.asAnimation().toString());
+		sender.sendMessage(ChatColor.AQUA + "Creation cancelled: " + ChatColor.DARK_AQUA + steps.completeAnimation().toString());
 		
 		players.remove(sender.getName());
+	}
+	
+	/*@Command(
+	name = "anim",
+	syntax = "preview {args}",
+	perm = "dtl.anim.commands.preview")*/
+	public void previewAnim(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
+	{
 	}
 	
 	@Command(
@@ -199,14 +330,7 @@ public class AnimationCommands implements Listener {
 	syntax = "stop <name>",
 	perm = "dtl.anim.commands.stop")
 	public void stopAnim(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
-	{
-		if ( args.get("name").equals("all") )
-		{
-			sender.sendMessage(ChatColor.AQUA + "Trying to stop all animations");
-			plugin.getManager().removeAllAnimations();
-			return;
-		}
-		
+	{		
 		AnimationSet anim = plugin.getLoader().getAnimation(args.get("name"));
 		if ( anim == null || !plugin.getManager().isRunning(anim) )
 		{
@@ -231,27 +355,48 @@ public class AnimationCommands implements Listener {
 		
 		private YamlConfiguration yaml;
 
-		public AnimCreationSteps(String name, Location loc)
+		public AnimCreationSteps(String name)
 		{
-			//set the animation name
+			this(name, false);
+		}
+		public AnimCreationSteps(String name, boolean load)
+		{
 			this.name = name.replace(" ", "_");
-			
-			yaml = new YamlConfiguration();
-			anim = new AnimationSet(name);
-			anim.setLocation(loc);
-			
-			//save the basic animation yaml
-			yaml.set(name + ".name", name);
-			yaml.set(name + ".schedule", anim.getSchedule());
-			yaml.set(name + ".distance", anim.getDistance());
-			yaml.set(name + ".location.x", loc.getBlockX());
-			yaml.set(name + ".location.y", loc.getBlockY());
-			yaml.set(name + ".location.z", loc.getBlockZ());
-			yaml.set(name + ".location.world", loc.getWorld().getName());
-			
-			frameCount = 0;
-			
-			step = AREA_EDIT;
+			//set the animation name
+			if ( !load )
+			{
+				yaml = new YamlConfiguration();
+				anim = new AnimationSet(name);
+
+				//save the basic animation yaml
+				yaml.set(name + ".name", name);
+				yaml.set(name + ".schedule", anim.getSchedule());
+				yaml.set(name + ".distance", anim.getDistance());
+
+				frameCount = 0;
+				step = AREA_EDIT;
+			}
+			else
+			{
+				anim = DtlAnimations.getInstance().getLoader().getAnimation(name);
+
+				yaml = new YamlConfiguration();
+				yaml.set(name + ".name", name);
+				yaml.set(name + ".schedule", anim.getSchedule());
+				yaml.set(name + ".distance", anim.getDistance());
+				
+				Location loc = anim.getLocation();
+				yaml.set(this.name + ".location.x", loc.getBlockX());
+				yaml.set(this.name + ".location.y", loc.getBlockY());
+				yaml.set(this.name + ".location.z", loc.getBlockZ());
+				yaml.set(this.name + ".location.world", loc.getWorld().getName());
+				
+				yaml.set("name", DtlAnimations.getInstance().getLoader().getAnimationYaml(name));
+				
+				frameCount = anim.getFrames().size() - 1;
+				frame = anim.getFrames().get(0);
+				step = FRAME_SETTING;
+			}
 		}
 
 		public void setDistance(int parseInt)
@@ -269,8 +414,8 @@ public class AnimationCommands implements Listener {
 		public void setFrameSchedule(int parseInt)
 		{
 			frame.setScheduleTime(parseInt);
-			if ( yaml.contains(name + "frames." + frameCount) )
-			    yaml.set(name + "frames." + frameCount + ".schedule", anim.getSchedule());
+		//	if ( yaml.contains(name + "frames." + frameCount) )
+		//	    yaml.set(name + "frames." + frameCount + ".schedule", anim.getSchedule());
 		}
 
 		public void setSession(LocalSession localSession)
@@ -278,10 +423,62 @@ public class AnimationCommands implements Listener {
 			this.session = localSession;
 		}
 
-		public AnimationSet asAnimation()
+		public int frameCount()
+		{
+			return frameCount + (step.equals(FRAME_SETTING) ? 1 : 0);
+		}
+		
+		public AnimationSet completeAnimation()
 		{
 			step = ANIMATION_FINISHED;
 			return anim;
+		}
+
+		public AnimationSet incompleteAnimation()
+		{
+			return anim;
+		}
+		
+		public boolean removeFrame(String name)
+		{
+			boolean found = false;
+			Iterator<AnimationFrame> it = anim.getFrames().iterator();
+			while(it.hasNext() && !found)
+			{
+				found = it.next().getName().equals(name);
+			}
+			if ( found ) 
+			{
+				it.remove();
+				--frameCount;
+			}
+			return found;
+		}
+		
+		public AnimationFrame showFrame(String name)
+		{
+			AnimationFrame found = null;
+			Iterator<AnimationFrame> it = anim.getFrames().iterator();
+			while(it.hasNext() && found == null)
+			{
+				found = (found = it.next()).getName().equals(name) ? found : null;
+			}
+			if ( found != null )
+				found.copyToServer();
+			return found;
+		}
+
+		public boolean editFrame(String name)
+		{
+			AnimationFrame frame = showFrame(name);
+			if ( frame != null ) step = FRAME_SETTING;
+			return (this.frame = frame) != null;
+		}
+		
+		public void cancelFrame()
+		{
+			step = FRAME_SETTING;
+			--frameCount;
 		}
 		
 		public void nextFrame()
@@ -290,7 +487,7 @@ public class AnimationCommands implements Listener {
 			frameCount++;
 		}
 
-		public void saveFrame(Player player, String name)
+		public void saveFrame(Player player, String name, int at)
 		{
 			if ( !new File("plugins/dtlAnimations/frames").exists() )
 				new File("plugins/dtlAnimations/frames").mkdirs();
@@ -333,19 +530,20 @@ public class AnimationCommands implements Listener {
 				SchematicFormat.MCEDIT.save(cb, file);
 				
 				//create the new AnimationFrame
-				frame = new AnimationFrame(anim, name);
+				frame = new AnimationFrame(anim, name, name);
 			//	Location loc = player.getLocation();
 				frame.setLocation(anim.getLocation());
 				
 				//frame yaml saving
-				yaml.set(this.name + ".frames." + frameCount + ".file", name);
+				//yaml.set(this.name + ".frames." + frameCount + ".file", name);
+				
 				/*yaml.set(this.name + ".frames." + frameCount + ".location.x", loc.getBlockX());
 				yaml.set(this.name + ".frames." + frameCount + ".location.y", loc.getBlockY());
 				yaml.set(this.name + ".frames." + frameCount + ".location.z", loc.getBlockZ());
 				yaml.set(this.name + ".frames." + frameCount + ".location.world", localPlayer.getWorld().getName());*/
 
 				//add the frame to the animation
-				anim.addFrame(frame);
+				anim.addFrame(at, frame);
 			}
 			catch( IncompleteRegionException e )
 			{
@@ -356,9 +554,13 @@ public class AnimationCommands implements Listener {
 
 		public YamlConfiguration asYaml()
 		{
+			int count = 0;
+			for ( AnimationFrame frame : anim.getFrames() )
+			{
+				yaml.set(this.name + ".frames." + count++ + ".file", frame.getFile());
+			}
 			return yaml;
 		}
-		
 		
 		public boolean areaSelectionStep()
 		{
@@ -377,22 +579,8 @@ public class AnimationCommands implements Listener {
 
 		enum CreationStep
 		{
-			AREA_SELECT, AREA_EDIT, FRAME_SETTING, ANIMATION_FINISHED;
+			AREA_SELECT, AREA_EDIT, FRAME_EDIT, FRAME_SHOW, FRAME_SETTING, ANIMATION_FINISHED;
 		}
 	}
 
-
-
-
-
-	/*     Vector min = sel.getNativeMinimumPoint();
-    Vector max = sel.getNativeMaximumPoint();
-    for(int x = min.getBlockX();x <= max.getBlockX(); x=x+1){
-        for(int y = min.getBlockY();y <= max.getBlockY(); y=y+1){
-            for(int z = min.getBlockZ();z <= max.getBlockZ(); z=z+1){
-                Location tmpblock = new Location(((Player)sender).getWorld(), x, y, z);
-                tmpblock.getBlock().setType(Material.AIR); 
-            }
-        }
-    }*/
 }

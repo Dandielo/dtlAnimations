@@ -1,6 +1,7 @@
 package net.dandielo.animation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.dandielo.AnimationLoader;
 import net.dandielo.bukkit.DtlAnimations;
@@ -66,7 +67,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 					);
 			
 			for ( String frame : animation.getConfigurationSection("frames").getKeys(false) )
-				frames.add( new AnimationFrame(this, animation.getConfigurationSection( AnimationLoader.buildPath("frames",frame) )) );
+				frames.add( new AnimationFrame(this, animation.getConfigurationSection(AnimationLoader.buildPath("frames",frame)), frame) );
 		} 
 		
 		else // Try uppercase keys (because of Denizen)	
@@ -85,7 +86,7 @@ public class AnimationSet implements Comparable<AnimationSet> {
 
 			
 			for ( String frame : animation.getConfigurationSection("FRAMES").getKeys(false) )
-				frames.add( new AnimationFrame(this, animation.getConfigurationSection( "FRAMES."+frame )) );
+				frames.add( new AnimationFrame(this, animation.getConfigurationSection("FRAMES."+frame ), frame) );
 		}
 
 		// Loaded animation
@@ -128,9 +129,20 @@ public class AnimationSet implements Comparable<AnimationSet> {
 	
 	public void addFrame(AnimationFrame frame)
 	{
+		if ( frames.contains(frame) )
+			frames.remove(frame);
 		frames.add(frame);
 	}
+	public void addFrame(int at, AnimationFrame frame)
+	{
+		frames.add(at, frame);
+	}
 
+	public List<AnimationFrame> getFrames()
+	{
+		return frames;
+	}
+	
 	public AnimationFrame getFrame()
 	{
 		return frames.get(frame);

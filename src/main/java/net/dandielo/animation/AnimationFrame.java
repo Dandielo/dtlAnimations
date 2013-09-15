@@ -1,5 +1,6 @@
 package net.dandielo.animation;
 
+import java.io.File;
 import java.util.List;
 
 import net.dandielo.bukkit.DtlAnimations;
@@ -11,16 +12,30 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.EmptyClipboardException;
+import com.sk89q.worldedit.LocalSession;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.schematic.SchematicFormat;
+
 public class AnimationFrame implements Cloneable {
 	private List<Packet52MultiBlockChange> data;
 	private int schedule;
 	private Location location;
+	private String name;
+	private String filename;
 	
 	private boolean defaultFrame; 
 	
-	public AnimationFrame(AnimationSet animation, String filename)
+	public AnimationFrame(AnimationSet animation, String filename, String name)
 	{
 		String filepath = "plugins/dtlAnimations/frames";
+		
+		//set the frame name
+		this.name = name;
+		this.filename = filename;
 		
 		schedule = animation.getSchedule();
 		location = animation.getLocation();
@@ -46,15 +61,18 @@ public class AnimationFrame implements Cloneable {
 		location = loc;
 	}
 	
-	public AnimationFrame(AnimationSet animation, ConfigurationSection frame)
+	public AnimationFrame(AnimationSet animation, ConfigurationSection frame, String name)
 	{
 		String filepath = "";
 		String filename = "";
+		
+		//set the name
+		this.name = name;
 
 		if (frame.contains("file"))
 		{
 			filepath = frame.getString("path", "plugins/dtlAnimations/frames");
-			filename = frame.getString("file");
+			this.filename = filename = frame.getString("file");
 			
 			defaultFrame = frame.getBoolean("default", false);
 			
@@ -76,7 +94,7 @@ public class AnimationFrame implements Cloneable {
 		else
 		{
 			filepath = frame.getString("PATH", "plugins/dtlAnimations/frames");
-			filename = frame.getString("FILE");
+			this.filename = filename = frame.getString("FILE");
 			
 			defaultFrame = frame.getBoolean("DEFAULT", false);
 			
@@ -103,6 +121,44 @@ public class AnimationFrame implements Cloneable {
 		}
 	}
 	
+	public void copyToServer()
+	{
+		String path = "plugins/dtlAnimations/frames";
+		File file = new File(path,filename+".schematic");
+		
+		if ( !file.exists() ) return;
+
+		WorldEdit we = DtlAnimations.getInstance().getWE().getWorldEdit();
+		LocalSession local = new LocalSession(we.getConfiguration());
+		EditSession edit = new EditSession(new BukkitWorld(location.getWorld()), we.getConfiguration().maxChangeLimit);
+		edit.enableQueue();
+		try
+		{
+			local.setClipboard(SchematicFormat.MCEDIT.load(file));
+			local.getClipboard().place(edit, getPastePosition(local, location), false);
+		}
+		catch( Exception e ) { }
+		edit.flushQueue();
+		we.flushBlockBag(null, edit);
+	}
+	
+	private Vector getPastePosition(LocalSession local, Location loc) throws EmptyClipboardException {
+		if (loc == null) 
+			return local.getClipboard().getOrigin();
+		else 
+			return new Vector(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
+	
+	public String getFile()
+	{
+		return filename;
+	}
+	
 	public boolean isDefault()
 	{
 		return defaultFrame;
@@ -121,6 +177,12 @@ public class AnimationFrame implements Cloneable {
 	public int getSchedule()
 	{
 		return schedule;
+	}
+	
+	@Override
+	public boolean equals(Object that)
+	{
+		return name.equals(((AnimationFrame)that).name);
 	}
 	
 }

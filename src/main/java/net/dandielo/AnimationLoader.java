@@ -109,6 +109,10 @@ public class AnimationLoader {
 		anim.setRepeats(-2);
 		return anim;
 	}
+	public ConfigurationSection getAnimationYaml(String name)
+	{
+		return animations.getConfigurationSection(name);
+	}
 	
 	public void addAnnimationYaml(String name, YamlConfiguration anim)
 	{
