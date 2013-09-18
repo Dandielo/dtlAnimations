@@ -40,15 +40,23 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.create")
 	public void createAnimation(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
-		if ( players.containsKey(sender.getName()) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "You cannot open another edit session!");
+			return;
+		}
 
 		AnimCreationSteps steps = new AnimCreationSteps(args.get("name"));
 
 		players.put(sender.getName(), steps);
 		steps.setSession(DtlAnimations.getInstance().getWE().getSession((Player) sender));
 
-		sender.sendMessage(ChatColor.AQUA + "Started a new animation setup: " + ChatColor.DARK_AQUA + args.get("name"));
+		sender.sendMessage(ChatColor.GOLD + "Started a new animation setup: " + ChatColor.DARK_AQUA + args.get("name"));
 	}
 	
 	@Command(
@@ -57,15 +65,22 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.load")
 	public void loadAnimation(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
-		if ( players.containsKey(sender.getName()) ) return;
-
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "You cannot open another edit session!");
+			return;
+		}
 		
 		AnimCreationSteps steps = new AnimCreationSteps(args.get("name"), true);
 
 		players.put(sender.getName(), steps);
 		steps.setSession(DtlAnimations.getInstance().getWE().getSession((Player) sender));
-		sender.sendMessage(ChatColor.AQUA + "Loaded animation: " + ChatColor.DARK_AQUA + args.get("name"));
+		sender.sendMessage(ChatColor.GOLD + "Loaded animation: " + ChatColor.DARK_AQUA + args.get("name"));
 	}
 
 	@Command(
@@ -74,12 +89,24 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.save-frame")
 	public void saveFrame(DtlAnimations plugin, CommandSender sender, Map<String, String> args) throws IncompleteRegionException
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( !steps.areaEditStep() ) return;
+		if ( !steps.areaEditStep() )
+		{
+			sender.sendMessage(ChatColor.GOLD + "If you want to add a new frame use this command: " + ChatColor.DARK_AQUA + "/frame next");
+		}
 
 		steps.saveFrame((Player) sender, args.get("frame"), steps.frameCount());
-		sender.sendMessage(ChatColor.AQUA + "Frame saved: " + ChatColor.DARK_AQUA + args.get("frame"));
+		sender.sendMessage(ChatColor.GOLD + "Frame saved: " + ChatColor.DARK_AQUA + args.get("frame"));
 	}
 
 	@Command(
@@ -88,12 +115,31 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.saveat-frame")
 	public void saveFrameAt(DtlAnimations plugin, CommandSender sender, Map<String, String> args) throws IncompleteRegionException
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( !steps.areaEditStep() ) return;
+		if ( !steps.areaEditStep() )
+		{
+			sender.sendMessage(ChatColor.GOLD + "If you want to add a new frame use this command: " + ChatColor.DARK_AQUA + "/frame next");
+		}
 
-		steps.saveFrame((Player) sender, args.get("frame"), Integer.parseInt(args.get("index")));
-		sender.sendMessage(ChatColor.AQUA + "Frame saved: " + ChatColor.DARK_AQUA + args.get("frame"));
+		try
+		{
+		    steps.saveFrame((Player) sender, args.get("frame"), Integer.parseInt(args.get("index")));
+		    sender.sendMessage(ChatColor.GOLD + "Frame saved: " + ChatColor.DARK_AQUA + args.get("frame"));
+		} catch( Exception e )
+		{
+			sender.sendMessage(ChatColor.RED + "Wrong index was supplied");
+		}
+		
 	}
 
 	@Command(
@@ -102,12 +148,24 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.replace-frame")
 	public void saveFrameAs(DtlAnimations plugin, CommandSender sender, Map<String, String> args) throws IncompleteRegionException
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( !steps.areaEditStep() ) return;
+		if ( !steps.areaEditStep() )
+		{
+			sender.sendMessage(ChatColor.GOLD + "If you want to set a new frame use this command: " + ChatColor.DARK_AQUA + "/frame next");
+		}
 
 		steps.saveFrame((Player) sender, args.get("frame"), steps.frameCount());
-		sender.sendMessage(ChatColor.AQUA + "Frame replaced: " + ChatColor.DARK_AQUA + args.get("frame"));
+		sender.sendMessage(ChatColor.GOLD + "Frame replaced: " + ChatColor.DARK_AQUA + args.get("frame"));
 	}
 	
 	@Command(
@@ -116,14 +174,26 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.edit-frame")
 	public void editFrame(DtlAnimations plugin, CommandSender sender, Map<String, String> args) throws IncompleteRegionException
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( !steps.frameSettingStep() ) return;
+		if ( !steps.frameSettingStep() )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Finish or cancel this frame before editing another");
+		}
 
 		if ( steps.editFrame(args.get("frame")) )
-		    sender.sendMessage(ChatColor.AQUA + "Frame loaded and pasted");
+		    sender.sendMessage(ChatColor.GOLD + "Frame loaded and pasted");
 		else
-			sender.sendMessage(ChatColor.AQUA + "Frame not found");
+			sender.sendMessage(ChatColor.RED + "Frame not found");
 	}
 
 	@Command(
@@ -132,14 +202,26 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.schedule-frame")
 	public void scheduleFrame(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( !steps.frameSettingStep() ) return;
+		if ( !steps.frameSettingStep() )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Finish or cancel this frame to use this command");
+		}
 
 		try
 		{
 			steps.setFrameSchedule(Integer.parseInt(args.get("time")));
-			sender.sendMessage(ChatColor.AQUA + "Frame schedule time changed: " + ChatColor.DARK_AQUA + args.get("time"));
+			sender.sendMessage(ChatColor.GOLD + "Frame schedule time changed: " + ChatColor.DARK_AQUA + args.get("time"));
 		}
 		catch ( Exception e )
 		{
@@ -154,13 +236,25 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.next-frame")
 	public void nextFrame(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( !steps.frameSettingStep() ) return;
+		if ( !steps.frameSettingStep() )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Finish this frame before adding a new one");
+			return;
+		}
 
 		steps.nextFrame();
-		
-		sender.sendMessage(ChatColor.AQUA + "Now set your next frame");
+		sender.sendMessage(ChatColor.GOLD + "Started next frame edit process");
 	}
 
 	@Command(
@@ -169,15 +263,24 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.list-frame")
 	public void frameList(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
 		
 		StringBuilder builder = new StringBuilder();
 		for ( AnimationFrame frame : steps.incompleteAnimation().getFrames() )
-			builder.append(", " + ChatColor.DARK_AQUA + frame.getName() + ChatColor.AQUA);
+			builder.append(", " + ChatColor.DARK_AQUA + frame.getName() + ChatColor.GOLD);
 		
 		//send the frame list list
-		sender.sendMessage(ChatColor.AQUA + "Frame list: " + builder.toString().substring(2));
+		sender.sendMessage(ChatColor.GOLD + "Frame list: " + builder.toString().substring(2));
 	}
 	
 	@Command(
@@ -186,14 +289,27 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.remove-frame")
 	public void frameRemove(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( !steps.frameSettingStep() ) return;
+		if ( !steps.frameSettingStep() ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "Finish or cancel current frame before using this command");
+			return;
+		}
 		
 		if ( steps.removeFrame(args.get("name")) )
-		    sender.sendMessage(ChatColor.AQUA + "Frame removed sucessfuly");
+		    sender.sendMessage(ChatColor.GOLD + "Frame removed sucessfuly");
 		else
-		    sender.sendMessage(ChatColor.AQUA + "Frame not found");
+		    sender.sendMessage(ChatColor.RED + "Frame not found");
 	}
 	
 	@Command(
@@ -202,12 +318,25 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.show-frame")
 	public void frameShow(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( !steps.frameSettingStep() ) return;
+		if ( !steps.frameSettingStep() )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Finish or cancel this frame before displaying another");
+			return;
+		}
 		
 		steps.showFrame(args.get("name"));
-		sender.sendMessage(ChatColor.AQUA + "Frame pasted");
+		sender.sendMessage(ChatColor.GOLD + "Frame pasted");
 	}
 	
 	@Command(
@@ -216,12 +345,25 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.show-frame")
 	public void frameCancel(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( !steps.areaEditStep() ) return;
+		if ( !steps.areaEditStep() ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "Nothing to cancel");
+			return;
+		}
 		
 		steps.cancelFrame();
-		sender.sendMessage(ChatColor.AQUA + "Cancelled frame creation");
+		sender.sendMessage(ChatColor.GOLD + "Cancelled frame creation");
 	}
 	
 	@Command(
@@ -230,14 +372,27 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.schedule")
 	public void scheduleAnimation(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( steps == null ) return;
+		if ( steps == null ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "Cannot use this for an empty animation");
+			return;
+		}
 		
 		try
 		{
 			steps.setSchedule(Integer.parseInt(args.get("time")));
-			sender.sendMessage(ChatColor.AQUA + "Schedule time changed: " + ChatColor.DARK_AQUA + args.get("time"));
+			sender.sendMessage(ChatColor.GOLD + "Schedule time changed: " + ChatColor.DARK_AQUA + args.get("time"));
 		}
 		catch( Exception e )
 		{
@@ -251,14 +406,27 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.distance")
 	public void distanceAnimation(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
+		if ( !(sender instanceof Player) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		}
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No session found!");
+			return;
+		}
 		AnimCreationSteps steps = players.get(sender.getName());
-		if ( steps == null ) return;
+		if ( steps == null )
+		{
+			sender.sendMessage(ChatColor.GOLD + "Cannot use this for an empty animation");
+			return;
+		}
 		
 		try
 		{
 			steps.setDistance(Integer.parseInt(args.get("dist")));
-			sender.sendMessage(ChatColor.AQUA + "Distance changed: " + ChatColor.DARK_AQUA + args.get("time"));
+			sender.sendMessage(ChatColor.GOLD + "Distance changed: " + ChatColor.DARK_AQUA + args.get("time"));
 		}
 		catch( Exception e )
 		{
@@ -272,15 +440,22 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.finish")
 	public void finishAnimation(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
-		if ( !players.containsKey(sender.getName()) ) return;
+		if ( !(sender instanceof Player) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		} 
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "No animation session found");
+			return;
+		}
 
 		AnimCreationSteps steps = players.get(sender.getName());
 		plugin.getLoader().addAnnimationYaml(steps.completeAnimation().toString(), steps.asYaml());
 		//DtlAnimations.getInstance().getAnimationManager().addAnimation(steps.asAnimation());
 		
-		sender.sendMessage(ChatColor.AQUA + "Animation finished: " + ChatColor.DARK_AQUA + steps.completeAnimation().toString());
-		
+		sender.sendMessage(ChatColor.GOLD + "Animation finished: " + ChatColor.DARK_AQUA + steps.completeAnimation().toString());
 		players.remove(sender.getName());
 	}
 
@@ -290,11 +465,19 @@ public class AnimationCommands implements Listener {
 	perm = "dtl.anim.commands.cancel")
 	public void cancelAnimation(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
 	{
-		if ( !(sender instanceof Player) ) return;
-		if ( !players.containsKey(sender.getName()) ) return;
+		if ( !(sender instanceof Player) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "Only players can use this command");
+			return;
+		} 
+		if ( !players.containsKey(sender.getName()) ) 
+		{
+			sender.sendMessage(ChatColor.GOLD + "First start or load an animaton before canceling it");
+			return;
+		}
 
 		AnimCreationSteps steps = players.get(sender.getName());
-		sender.sendMessage(ChatColor.AQUA + "Creation cancelled: " + ChatColor.DARK_AQUA + steps.completeAnimation().toString());
+		sender.sendMessage(ChatColor.GOLD + "Session cancelled: " + ChatColor.DARK_AQUA + steps.completeAnimation().toString());
 		
 		players.remove(sender.getName());
 	}
@@ -320,7 +503,7 @@ public class AnimationCommands implements Listener {
 		}
 		else
 		{
-			sender.sendMessage(ChatColor.AQUA + "Trying to start the requested animation: " + ChatColor.DARK_AQUA + args.get("name"));
+			sender.sendMessage(ChatColor.GOLD + "Trying to start the requested animation: " + ChatColor.DARK_AQUA + args.get("name"));
 			plugin.getManager().addAnimation(anim);
 		}
 	}
@@ -338,7 +521,7 @@ public class AnimationCommands implements Listener {
 		}
 		else
 		{
-			sender.sendMessage(ChatColor.AQUA + "Trying to stop the requested animation: " + ChatColor.DARK_AQUA + args.get("name"));
+			sender.sendMessage(ChatColor.GOLD + "Trying to stop the requested animation: " + ChatColor.DARK_AQUA + args.get("name"));
 			plugin.getManager().removeAnimation(anim);
 		}
 	}

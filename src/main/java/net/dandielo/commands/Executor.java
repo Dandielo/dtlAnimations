@@ -3,7 +3,6 @@ package net.dandielo.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class Executor implements CommandExecutor {
 	public static CommandManager cManager;
@@ -15,11 +14,6 @@ public class Executor implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {
-		
-		if ( sender instanceof Player )
-		{
-			return cManager.execute(name, args, sender);
-		}
-		return true;
+		return cManager.execute(name, args, sender);
 	}
 }
