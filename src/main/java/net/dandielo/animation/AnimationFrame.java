@@ -73,6 +73,7 @@ public class AnimationFrame implements Cloneable {
 		{
 			filepath = frame.getString("path", "plugins/dtlAnimations/frames");
 			this.filename = filename = frame.getString("file");
+			this.name = frame.getString("name", filename);
 			
 			defaultFrame = frame.getBoolean("default", false);
 			
@@ -95,6 +96,7 @@ public class AnimationFrame implements Cloneable {
 		{
 			filepath = frame.getString("PATH", "plugins/dtlAnimations/frames");
 			this.filename = filename = frame.getString("FILE");
+			this.name = frame.getString("NAME", filename);
 			
 			defaultFrame = frame.getBoolean("DEFAULT", false);
 			

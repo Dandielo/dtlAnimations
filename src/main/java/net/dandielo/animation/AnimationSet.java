@@ -129,9 +129,13 @@ public class AnimationSet implements Comparable<AnimationSet> {
 	
 	public void addFrame(AnimationFrame frame)
 	{
+		int at = frames.size();
 		if ( frames.contains(frame) )
+		{
+			at = frames.indexOf(frame);
 			frames.remove(frame);
-		frames.add(frame);
+		}
+		frames.add(at, frame);
 	}
 	public void addFrame(int at, AnimationFrame frame)
 	{

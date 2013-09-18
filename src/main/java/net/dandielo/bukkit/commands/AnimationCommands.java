@@ -105,7 +105,7 @@ public class AnimationCommands implements Listener {
 			sender.sendMessage(ChatColor.GOLD + "If you want to add a new frame use this command: " + ChatColor.DARK_AQUA + "/frame next");
 		}
 
-		steps.saveFrame((Player) sender, args.get("frame"), steps.frameCount());
+		steps.saveFrame((Player) sender, args.get("frame"), steps.frameCount(), false);
 		sender.sendMessage(ChatColor.GOLD + "Frame saved: " + ChatColor.DARK_AQUA + args.get("frame"));
 	}
 
@@ -133,7 +133,7 @@ public class AnimationCommands implements Listener {
 
 		try
 		{
-		    steps.saveFrame((Player) sender, args.get("frame"), Integer.parseInt(args.get("index")));
+		    steps.saveFrame((Player) sender, args.get("frame"), Integer.parseInt(args.get("index")), false);
 		    sender.sendMessage(ChatColor.GOLD + "Frame saved: " + ChatColor.DARK_AQUA + args.get("frame"));
 		} catch( Exception e )
 		{
@@ -162,9 +162,10 @@ public class AnimationCommands implements Listener {
 		if ( !steps.areaEditStep() )
 		{
 			sender.sendMessage(ChatColor.GOLD + "If you want to set a new frame use this command: " + ChatColor.DARK_AQUA + "/frame next");
+			return;
 		}
 
-		steps.saveFrame((Player) sender, args.get("frame"), steps.frameCount());
+		steps.saveFrame((Player) sender, args.get("frame"), steps.frameCount(), true);
 		sender.sendMessage(ChatColor.GOLD + "Frame replaced: " + ChatColor.DARK_AQUA + args.get("frame"));
 	}
 	
@@ -534,7 +535,6 @@ public class AnimationCommands implements Listener {
 
 		private AnimationSet anim;
 		private AnimationFrame frame;
-		private int frameCount;
 		
 		private YamlConfiguration yaml;
 
@@ -556,7 +556,6 @@ public class AnimationCommands implements Listener {
 				yaml.set(name + ".schedule", anim.getSchedule());
 				yaml.set(name + ".distance", anim.getDistance());
 
-				frameCount = 0;
 				step = AREA_EDIT;
 			}
 			else
@@ -576,7 +575,6 @@ public class AnimationCommands implements Listener {
 				
 				yaml.set("name", DtlAnimations.getInstance().getLoader().getAnimationYaml(name));
 				
-				frameCount = anim.getFrames().size() - 1;
 				frame = anim.getFrames().get(0);
 				step = FRAME_SETTING;
 			}
@@ -608,7 +606,7 @@ public class AnimationCommands implements Listener {
 
 		public int frameCount()
 		{
-			return frameCount + (step.equals(FRAME_SETTING) ? 1 : 0);
+			return anim.getFrames().size();
 		}
 		
 		public AnimationSet completeAnimation()
@@ -633,7 +631,6 @@ public class AnimationCommands implements Listener {
 			if ( found ) 
 			{
 				it.remove();
-				--frameCount;
 			}
 			return found;
 		}
@@ -661,16 +658,14 @@ public class AnimationCommands implements Listener {
 		public void cancelFrame()
 		{
 			step = FRAME_SETTING;
-			--frameCount;
 		}
 		
 		public void nextFrame()
 		{
 			step = AREA_EDIT;
-			frameCount++;
 		}
 
-		public void saveFrame(Player player, String name, int at)
+		public void saveFrame(Player player, String name, int at, boolean replace)
 		{
 			if ( !new File("plugins/dtlAnimations/frames").exists() )
 				new File("plugins/dtlAnimations/frames").mkdirs();
@@ -726,7 +721,10 @@ public class AnimationCommands implements Listener {
 				yaml.set(this.name + ".frames." + frameCount + ".location.world", localPlayer.getWorld().getName());*/
 
 				//add the frame to the animation
-				anim.addFrame(at, frame);
+				if ( replace )
+					anim.addFrame(frame);
+				else
+					anim.addFrame(at, frame);
 			}
 			catch( IncompleteRegionException e )
 			{
