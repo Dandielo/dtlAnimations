@@ -14,7 +14,7 @@ import net.dandielo.jnbt.NBTInputStream;
 import net.dandielo.jnbt.ShortTag;
 import net.dandielo.jnbt.StringTag;
 import net.dandielo.jnbt.Tag;
-import net.minecraft.server.v1_6_R2.Packet52MultiBlockChange;
+import net.minecraft.server.v1_6_R3.Packet52MultiBlockChange;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
