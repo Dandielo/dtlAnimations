@@ -14,47 +14,63 @@ import net.dandielo.jnbt.NBTInputStream;
 import net.dandielo.jnbt.ShortTag;
 import net.dandielo.jnbt.StringTag;
 import net.dandielo.jnbt.Tag;
-import net.minecraft.server.v1_6_R3.Packet52MultiBlockChange;
+import net.minecraft.server.v1_7_R1.PacketDataSerializer;
+import net.minecraft.server.v1_7_R1.PacketPlayOutMultiBlockChange;
+import net.minecraft.util.io.netty.buffer.ByteBuf;
+import net.minecraft.util.io.netty.buffer.EmptyByteBuf;
+import net.minecraft.util.io.netty.buffer.UnpooledByteBufAllocator;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 
 public class PacketsManager {
 
-	public List<Packet52MultiBlockChange> fromSchematic(String path, String filename, Location pos) throws Exception
+	public List<PacketPlayOutMultiBlockChange> fromSchematic(String path, String filename, Location pos) throws Exception
 	{
 		Map<Chunk, List<byte[]>> prePackets = asPrePacketDatas(path, filename, pos);
-		List<Packet52MultiBlockChange> packets = new ArrayList<Packet52MultiBlockChange>();
+		List<PacketPlayOutMultiBlockChange> packets = new ArrayList<PacketPlayOutMultiBlockChange>();
 		
 		/** changing data into packets*/
 		for ( Map.Entry<Chunk, List<byte[]>> entry : prePackets.entrySet() )
 		{
-			Packet52MultiBlockChange packet = new Packet52MultiBlockChange();
-		//	System.out.print(packet);
+			PacketPlayOutMultiBlockChange packet = new PacketPlayOutMultiBlockChange();
 
-			int ecX = entry.getKey().getX();// + cosX;
-			int ecZ = entry.getKey().getZ();// + cosZ;
 			
+			ByteBuf buffer = new EmptyByteBuf(new UnpooledByteBufAllocator(false));
+			PacketDataSerializer ser = new PacketDataSerializer(buffer);
+			
+			int ecX = entry.getKey().getX();
+			int ecZ = entry.getKey().getZ();
+			int rC = entry.getValue().size();
+
+			ser.writeInt(ecX);
+			ser.writeInt(ecZ);
+			ser.writeShort(rC);
+			ser.writeInt(rC*4);
+			
+			/*
 			packet.a = ecX;
 			packet.b = ecZ;
 			packet.d = entry.getValue().size()*4;
-			
-			byte[] data = new byte[packet.d];
-			int i = 0;
+			*/
+		//	byte[] data = new byte[rC];
+		//	int i = 0;
 			for ( byte[] d : entry.getValue() )
 			{
-				
-				data[i] = d[0];
-				data[i+1] = d[1];
-				data[i+2] = d[2]; 
-				data[i+3] = d[3]; 
+				ser.writeBytes(d);
+			//	data[i] = d[0];
+			//	data[i+1] = d[1];
+			//	data[i+2] = d[2]; 
+			//	data[i+3] = d[3]; 
 				
 			//	System.out.print(data[i] + " " + data[i+1] + " " + data[i+2] + " " + data[i+3]);
-				i += 4;
-			}
+			//	i += 4;
+			}/*
 			
 			packet.c = data;
-
+			 */
+			packet.a(ser);
+			
 			packets.add(packet);
 		}
 		

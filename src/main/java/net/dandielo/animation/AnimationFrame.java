@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.List;
 
 import net.dandielo.bukkit.DtlAnimations;
-import net.minecraft.server.v1_6_R3.EntityPlayer;
-import net.minecraft.server.v1_6_R3.Packet52MultiBlockChange;
+import net.minecraft.server.v1_7_R1.EntityPlayer;
+import net.minecraft.server.v1_7_R1.PacketPlayOutMultiBlockChange;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.EditSession;
@@ -21,7 +21,7 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class AnimationFrame implements Cloneable {
-	private List<Packet52MultiBlockChange> data;
+	private List<PacketPlayOutMultiBlockChange> data;
 	private int schedule;
 	private Location location;
 	private String name;
@@ -170,7 +170,7 @@ public class AnimationFrame implements Cloneable {
 	{
 		EntityPlayer E = ((CraftPlayer)player).getHandle();
 		
-		for ( Packet52MultiBlockChange packet : data )
+		for ( PacketPlayOutMultiBlockChange packet : data )
 		{
 			E.playerConnection.sendPacket(packet);
 		}
