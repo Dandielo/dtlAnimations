@@ -17,9 +17,7 @@ import net.dandielo.jnbt.Tag;
 import net.minecraft.server.v1_7_R1.PacketDataSerializer;
 import net.minecraft.server.v1_7_R1.PacketPlayOutMultiBlockChange;
 import net.minecraft.util.io.netty.buffer.ByteBuf;
-import net.minecraft.util.io.netty.buffer.EmptyByteBuf;
 import net.minecraft.util.io.netty.buffer.Unpooled;
-import net.minecraft.util.io.netty.buffer.UnpooledByteBufAllocator;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
