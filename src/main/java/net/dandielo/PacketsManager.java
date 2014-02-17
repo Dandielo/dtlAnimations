@@ -18,6 +18,7 @@ import net.minecraft.server.v1_7_R1.PacketDataSerializer;
 import net.minecraft.server.v1_7_R1.PacketPlayOutMultiBlockChange;
 import net.minecraft.util.io.netty.buffer.ByteBuf;
 import net.minecraft.util.io.netty.buffer.EmptyByteBuf;
+import net.minecraft.util.io.netty.buffer.Unpooled;
 import net.minecraft.util.io.netty.buffer.UnpooledByteBufAllocator;
 
 import org.bukkit.Chunk;
@@ -36,7 +37,7 @@ public class PacketsManager {
 			PacketPlayOutMultiBlockChange packet = new PacketPlayOutMultiBlockChange();
 
 			
-			ByteBuf buffer = new EmptyByteBuf(new UnpooledByteBufAllocator(false));
+			ByteBuf buffer = Unpooled.buffer();
 			PacketDataSerializer ser = new PacketDataSerializer(buffer);
 			
 			int ecX = entry.getKey().getX();
@@ -48,29 +49,12 @@ public class PacketsManager {
 			ser.writeShort(rC);
 			ser.writeInt(rC*4);
 			
-			/*
-			packet.a = ecX;
-			packet.b = ecZ;
-			packet.d = entry.getValue().size()*4;
-			*/
-		//	byte[] data = new byte[rC];
-		//	int i = 0;
 			for ( byte[] d : entry.getValue() )
 			{
 				ser.writeBytes(d);
-			//	data[i] = d[0];
-			//	data[i+1] = d[1];
-			//	data[i+2] = d[2]; 
-			//	data[i+3] = d[3]; 
-				
-			//	System.out.print(data[i] + " " + data[i+1] + " " + data[i+2] + " " + data[i+3]);
-			//	i += 4;
-			}/*
+			}
 			
-			packet.c = data;
-			 */
 			packet.a(ser);
-			
 			packets.add(packet);
 		}
 		
