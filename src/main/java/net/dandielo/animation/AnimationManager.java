@@ -37,8 +37,11 @@ public class AnimationManager {
 	{
 		List<AnimationSet> ret = new ArrayList<AnimationSet>();
 		for ( AnimationSet animation : animations.keySet() )
-			if ( player.getLocation().distance(animation.getLocation()) < animation.getDistance() )
-				ret.add(animation);
+		{
+			if ( player.getWorld().equals(animation.getLocation().getWorld()) )
+				if ( player.getLocation().distance(animation.getLocation()) < animation.getDistance() )
+					ret.add(animation);
+		}
 		return ret;
 	}
 	

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import net.dandielo.jnbt.ByteArrayTag;
 import net.dandielo.jnbt.CompoundTag;
-//import net.dandielo.jnbt.IntTag;
 import net.dandielo.jnbt.NBTInputStream;
 import net.dandielo.jnbt.ShortTag;
 import net.dandielo.jnbt.StringTag;
