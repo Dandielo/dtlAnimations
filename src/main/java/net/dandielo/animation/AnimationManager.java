@@ -30,7 +30,9 @@ public class AnimationManager {
 	//Overall animatiom procedures
 	public boolean checkDistance(AnimationSet animation, Player player)
 	{
-		return player.getLocation().distance(animation.getLocation()) < animation.getDistance();
+		if ( player.getWorld().equals(animation.getLocation().getWorld()) )
+			return player.getLocation().distance(animation.getLocation()) < animation.getDistance();
+		return false;
 	}
 	
 	public List<AnimationSet> getNearAnimations(Player player)
@@ -38,9 +40,8 @@ public class AnimationManager {
 		List<AnimationSet> ret = new ArrayList<AnimationSet>();
 		for ( AnimationSet animation : animations.keySet() )
 		{
-			if ( player.getWorld().equals(animation.getLocation().getWorld()) )
-				if ( player.getLocation().distance(animation.getLocation()) < animation.getDistance() )
-					ret.add(animation);
+			if ( checkDistance(animation, player) )
+				ret.add(animation);
 		}
 		return ret;
 	}
