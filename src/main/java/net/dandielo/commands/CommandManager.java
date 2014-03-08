@@ -130,7 +130,7 @@ public class CommandManager {
 			{
 				return command.getValue().execute(sender, args);
 			}
-		//locale.sendMessage(sender, "error-command-invalid");
+		sender.sendMessage(ChatColor.RED + "This command does not exists");
 		return true;
 	}
 	
