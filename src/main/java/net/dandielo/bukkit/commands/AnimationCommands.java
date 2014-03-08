@@ -103,6 +103,7 @@ public class AnimationCommands implements Listener {
 		if ( !steps.areaEditStep() )
 		{
 			sender.sendMessage(ChatColor.GOLD + "If you want to add a new frame use this command: " + ChatColor.DARK_AQUA + "/frame next");
+			return;
 		}
 
 		steps.saveFrame((Player) sender, args.get("frame"), steps.frameCount(), false);
@@ -129,6 +130,7 @@ public class AnimationCommands implements Listener {
 		if ( !steps.areaEditStep() )
 		{
 			sender.sendMessage(ChatColor.GOLD + "If you want to add a new frame use this command: " + ChatColor.DARK_AQUA + "/frame next");
+			return;
 		}
 
 		try
@@ -189,6 +191,7 @@ public class AnimationCommands implements Listener {
 		if ( !steps.frameSettingStep() )
 		{
 			sender.sendMessage(ChatColor.GOLD + "Finish or cancel this frame before editing another");
+			return;
 		}
 
 		if ( steps.editFrame(args.get("frame")) )
@@ -217,6 +220,7 @@ public class AnimationCommands implements Listener {
 		if ( !steps.frameSettingStep() )
 		{
 			sender.sendMessage(ChatColor.GOLD + "Finish or cancel this frame to use this command");
+			return;
 		}
 
 		try
@@ -527,6 +531,41 @@ public class AnimationCommands implements Listener {
 		}
 	}
 
+	@Command(
+	name = "anim",
+	syntax = "list",
+	perm = "dtl.anim.commands.list")
+	public void listAnim(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
+	{
+		sender.sendMessage(ChatColor.GOLD + "=== Animation list ===");
+		for(AnimationSet anim : plugin.getManager().getAnimations())
+		{
+			sender.sendMessage(ChatColor.GREEN + anim.toString() + ": " + ChatColor.GRAY + plugin.getManager().isRunning(anim));
+		}
+	}
+
+
+	@Command(
+	name = "anim",
+	syntax = "delete <name>",
+	perm = "dtl.anim.commands.delete")
+	public void deleteAnim(DtlAnimations plugin, CommandSender sender, Map<String, String> args)
+	{		
+		AnimationSet anim = plugin.getLoader().getAnimation(args.get("name"));
+		if ( anim == null )
+		{
+			sender.sendMessage(ChatColor.RED + "Falied to delete the following animation: " + ChatColor.DARK_AQUA + args.get("name"));
+		}
+		else
+		{
+			sender.sendMessage(ChatColor.GOLD + "Trying to stop the requested animation: " + ChatColor.DARK_AQUA + args.get("name"));
+			plugin.getManager().removeAnimation(anim);
+			sender.sendMessage(ChatColor.GOLD + "Deleting the animation: " + ChatColor.DARK_AQUA + args.get("name"));
+			plugin.getManager().deleteAnimation(anim);
+			plugin.getLoader().removeAnimationYaml(args.get("name"));
+		}
+	}
+	
 	static class AnimCreationSteps
 	{
 		private String name;

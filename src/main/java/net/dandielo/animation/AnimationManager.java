@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import net.dandielo.bukkit.DtlAnimations;
 
@@ -234,6 +235,14 @@ public class AnimationManager {
 				removeAnimation(anim);
 		}
 	}
+	
+	public void deleteAnimation(AnimationSet anim)
+	{
+		animations.remove(anim);
+	}
 
-
+	public Set<AnimationSet> getAnimations()
+	{
+		return animations.keySet();
+	}
 }

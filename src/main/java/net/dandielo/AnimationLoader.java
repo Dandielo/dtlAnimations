@@ -114,6 +114,11 @@ public class AnimationLoader {
 		return animations.getConfigurationSection(name);
 	}
 	
+	public void removeAnimationYaml(String name)
+	{
+		this.animations.set(name, null);
+		save();
+	}
 	public void addAnnimationYaml(String name, YamlConfiguration anim)
 	{
 		this.animations.set(name, anim.getConfigurationSection(name));
